@@ -44,8 +44,8 @@ enum class AppDestination(
     val contentTitle: String,
 ) {
     HOME("Accueil", "Accueil"),
-    SEARCH("Rechercher", "Rechercher"),
-    PROFILE("Profil", "Profil"),
+    RECHERCHER("Rechercher", "Rechercher"),
+    PROFIL("Profil", "Profil"),
 }
 
 @Composable
@@ -104,16 +104,16 @@ private fun LivingDexMenuContent(
             }
 
             MenuIconButton(
-                destination = AppDestination.PROFILE,
+                destination = AppDestination.PROFIL,
                 onDestinationSelected = onDestinationSelected
             ) {
                 MenuImageIcon(
-                    resourceId = if (currentDestination == AppDestination.PROFILE) {
+                    resourceId = if (currentDestination == AppDestination.PROFIL) {
                         R.drawable.utilisateur_plein
                     } else {
                         R.drawable.utilisateur
                     },
-                    contentDescription = AppDestination.PROFILE.label,
+                    contentDescription = AppDestination.PROFIL.label,
                     modifier = Modifier.size(52.dp)
                 )
             }
@@ -125,24 +125,24 @@ private fun LivingDexMenuContent(
                 .size(pokeBallSize)
                 .clipToBounds()
                 .circularTapTarget(pokeBallSize) {
-                    onDestinationSelected(AppDestination.SEARCH)
+                    onDestinationSelected(AppDestination.RECHERCHER)
                 },
             contentAlignment = Alignment.Center
         ) {
             Image(
                 painter = painterResource(R.drawable.ball),
-                contentDescription = AppDestination.SEARCH.label,
+                contentDescription = AppDestination.RECHERCHER.label,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.size(pokeBallAssetSize)
             )
         }
 
         Text(
-            text = AppDestination.SEARCH.label,
+            text = AppDestination.RECHERCHER.label,
             color = Color.White,
             fontSize = 17.sp,
             lineHeight = 21.sp,
-            fontWeight = if (currentDestination == AppDestination.SEARCH) {
+            fontWeight = if (currentDestination == AppDestination.RECHERCHER) {
                 FontWeight.Medium
             } else {
                 FontWeight.Normal
@@ -153,11 +153,12 @@ private fun LivingDexMenuContent(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
-                ) { onDestinationSelected(AppDestination.SEARCH) }
+                ) { onDestinationSelected(AppDestination.RECHERCHER) }
         )
     }
 }
 
+// Merci l'IA
 private fun Modifier.circularTapTarget(
     size: Dp,
     onTap: () -> Unit,
@@ -222,7 +223,7 @@ private fun LivingDexMenuPreview() {
             contentAlignment = Alignment.BottomCenter
         ) {
             LivingDexMenu(
-                currentDestination = AppDestination.SEARCH,
+                currentDestination = AppDestination.RECHERCHER,
                 onDestinationSelected = {}
             )
         }

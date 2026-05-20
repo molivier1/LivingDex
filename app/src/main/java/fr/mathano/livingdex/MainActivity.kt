@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.sp
 import fr.mathano.livingdex.ui.AppDestination
+import fr.mathano.livingdex.ui.EcranHome
 import fr.mathano.livingdex.ui.LivingDexMenu
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
@@ -51,19 +52,30 @@ fun LivingDexApp() {
             )
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF4F4F4))
-                .padding(innerPadding),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = currentDestination.contentTitle,
-                color = Color.Black,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Medium
-            )
+        when (currentDestination) {
+            AppDestination.HOME -> {
+                EcranHome(
+                    modifier = Modifier.padding(innerPadding)
+                )
+            }
+
+            AppDestination.RECHERCHER,
+            AppDestination.PROFIL -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(0xFFF4F4F4))
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = currentDestination.contentTitle,
+                        color = Color.Black,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
         }
     }
 }
