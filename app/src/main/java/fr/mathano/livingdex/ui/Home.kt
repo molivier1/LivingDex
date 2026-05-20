@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import fr.mathano.livingdex.R
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
 @Composable
@@ -21,7 +22,7 @@ fun EcranHome(
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(R.integer.n_colonnes),
         modifier = modifier
             .fillMaxSize()
             .background(Color(0xFFF4F4F4)),
@@ -44,7 +45,7 @@ private fun CarreArrondi(
             .aspectRatio(1f)
             .background(
                 color = Color(0xFFD9D9D9),
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(R.integer.arrondi.dp)
             )
     )
 }

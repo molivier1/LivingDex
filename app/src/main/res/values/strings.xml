@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">LivingDex</string>
     <integer name="arrondi">14</integer>
+    <integer name="n_colonnes">2</integer>
 </resources>
