@@ -28,13 +28,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.mathano.livingdex.R
-import fr.mathano.livingdex.data.PokeApiClient
+import fr.mathano.livingdex.data.Regions
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
 @Composable
 fun EcranHome(
     modifier: Modifier = Modifier,
-    chargerRegions: suspend (String) -> List<String> = PokeApiClient::recupererRegions,
+    chargerRegions: suspend (String) -> List<String> = Regions::recupererRegions,
 ) {
     var state by remember { mutableStateOf<RegionsState>(RegionsState.Loading) }
     val columnCount = integerResource(R.integer.n_colonnes)
