@@ -33,13 +33,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.Regions
+import fr.mathano.livingdex.data.model.DataRegion
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
 @Composable
 fun EcranHome(
     modifier: Modifier = Modifier,
     onRegionClick: (String, Int) -> Unit = { _, _ -> },
-    chargerRegions: suspend (String) -> HashMap<String, Int> = Regions::recupererRegions,
+    chargerRegions: suspend (String) -> List<DataRegion> = Regions::recupererRegions,
 ) {
     var state by remember { mutableStateOf<RegionsState>(RegionsState.Loading) }
     val columnCount = integerResource(R.integer.n_colonnes)
@@ -71,9 +72,9 @@ fun EcranHome(
                 item { Text("Erreur API") }
             }
             is RegionsState.Success -> {
-                items(currentState.regions.toList()) { (label, idPokedex) ->
+                items(currentState.regions.toList()) { (idRegion, nomRegion, idPokedex) ->
                     CarreArrondi(
-                        label = label,
+                        label = nomRegion,
                         cornerRadius = cornerRadius,
                         idPokedex = idPokedex,
                         onClick = onRegionClick
@@ -87,7 +88,7 @@ fun EcranHome(
 private sealed interface RegionsState {
     data object Loading : RegionsState
     data object Error : RegionsState
-    class Success(val regions: HashMap<String, Int>) : RegionsState
+    class Success(val regions: List<DataRegion>) : RegionsState
 }
 
 @Composable
