@@ -22,11 +22,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.sp
 import fr.mathano.livingdex.ui.AppDestination
-import fr.mathano.livingdex.ui.EcranHome
 import fr.mathano.livingdex.ui.LivingDexMenu
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
+import java.util.logging.Logger
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        val logger: Logger
+            get() {
+                return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
+            }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -54,9 +61,7 @@ fun LivingDexApp() {
     ) { innerPadding ->
         when (currentDestination) {
             AppDestination.HOME -> {
-                EcranHome(
-                    modifier = Modifier.padding(innerPadding)
-                )
+                fr.mathano.livingdex.ui.NavigationApp()
             }
 
             AppDestination.RECHERCHER,

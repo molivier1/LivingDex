@@ -1,18 +1,20 @@
 package fr.mathano.livingdex.data
 
 import co.pokeapi.pokekotlin.PokeApi
+import fr.mathano.livingdex.MainActivity.Companion as outils
 
 object Regions {
-    suspend fun recupererRegions(locale: String): List<String> {
-        val regions = mutableListOf<String>()
+    suspend fun recupererRegions(locale: String): HashMap<String, Int> {
+        val regions = HashMap<String, Int>()
 
         for (regionRaw in PokeApi.getRegionList(0, 100).results) {
             val region = PokeApi.getRegion(regionRaw.id)
 
-            regions.add(
-                region.names.firstOrNull { langue ->
-                    langue.language.name == locale
-                }?.name?: region.name.toDisplayName())
+            regions[
+                region.names.firstOrNull {
+                    it.language.name == locale
+                }?.name ?: region.name.toDisplayName()
+            ] = region.pokedexes.firstOrNull()?.id ?: -1
         }
 
         return regions
