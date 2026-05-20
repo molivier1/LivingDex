@@ -11,12 +11,6 @@ object Regions {
         for (regionRaw in PokeApi.getRegionList(0, 100).results) {
             val region = PokeApi.getRegion(regionRaw.id)
 
-            /*regions[
-                region.names.firstOrNull {
-                    it.language.name == locale
-                }?.name ?: region.name.toDisplayName()
-            ] = region.pokedexes.firstOrNull()?.id ?: -1*/
-
             val idRegion = region.id
 
             val nomRegion = region.names.firstOrNull {

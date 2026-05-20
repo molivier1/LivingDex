@@ -25,33 +25,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import fr.mathano.livingdex.R
-import fr.mathano.livingdex.data.Regions
-import fr.mathano.livingdex.data.model.DataRegion
-import fr.mathano.livingdex.ui.theme.LivingDexTheme
+import fr.mathano.livingdex.data.Pokedex
+import fr.mathano.livingdex.data.model.DataPokemon
 
 @Composable
-fun EcranHome(
+fun EcranPokedex(
     modifier: Modifier = Modifier,
-    onRegionClick: (String, Int) -> Unit = { _, _ -> },
-    chargerRegions: suspend (String) -> List<DataRegion> = Regions::recupererRegions,
+    nomRegion: String,
+    idPokedex: Int,
+    onPokemonClick: (String) -> Unit = {_ -> },
+    recupererPokedexParRegion: suspend (Int) -> List<DataPokemon> = Pokedex::recupererPokedexParRegion,
 ) {
-    var state by remember { mutableStateOf<RegionsState>(RegionsState.Loading) }
+    val locale = Locale.current.language
+    var state by remember { mutableStateOf<PokedexState>(PokedexState.Loading) }
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
-    val locale = Locale.current.language
 
-    LaunchedEffect(chargerRegions, locale) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = "Region: $nomRegion\nPokedex ID: $idPokedex"
+        )
+    }
+
+    LaunchedEffect (recupererPokedexParRegion, idPokedex) {
         state = try {
-            RegionsState.Success(chargerRegions(locale))
+            PokedexState.Success(recupererPokedexParRegion(idPokedex))
         } catch (exception: Exception) {
-            RegionsState.Error
+            PokedexState.Error
         }
     }
 
@@ -65,19 +70,18 @@ fun EcranHome(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         when (val currentState = state) {
-            is RegionsState.Loading -> {
-                items(8) { CarreArrondi(label = "", cornerRadius = cornerRadius, idPokedex = 0, onClick = onRegionClick) }
+            is PokedexState.Loading -> {
+                items(8) { CarrePokemon(label = "", cornerRadius = cornerRadius, onClick = onPokemonClick) }
             }
-            is RegionsState.Error -> {
+            is PokedexState.Error -> {
                 item { Text("Erreur API") }
             }
-            is RegionsState.Success -> {
-                items(currentState.regions.toList()) { (idRegion, nomRegion, idPokedex) ->
-                    CarreArrondi(
-                        label = nomRegion,
+            is PokedexState.Success -> {
+                items(currentState.pokemons.toList()) { (idPokemon: Int, nom: String, urlSprite: String) ->
+                    CarrePokemon(
+                        label = nom,
                         cornerRadius = cornerRadius,
-                        idPokedex = idPokedex,
-                        onClick = onRegionClick
+                        onClick = onPokemonClick
                     )
                 }
             }
@@ -85,18 +89,17 @@ fun EcranHome(
     }
 }
 
-private sealed interface RegionsState {
-    data object Loading : RegionsState
-    data object Error : RegionsState
-    class Success(val regions: List<DataRegion>) : RegionsState
+private sealed interface PokedexState {
+    data object Loading : PokedexState
+    data object Error : PokedexState
+    class Success(val pokemons: List<DataPokemon>) : PokedexState
 }
 
 @Composable
-private fun CarreArrondi(
+private fun CarrePokemon(
     label: String,
     cornerRadius: androidx.compose.ui.unit.Dp,
-    idPokedex: Int,
-    onClick: (String, Int) -> Unit,
+    onClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -107,7 +110,7 @@ private fun CarreArrondi(
                 shape = RoundedCornerShape(cornerRadius)
             )
             .clickable {
-                onClick(label, idPokedex)
+                onClick(label)
             }
             .padding(12.dp),
         contentAlignment = Alignment.Center
@@ -120,54 +123,3 @@ private fun CarreArrondi(
         )
     }
 }
-
-
-@Composable
-fun NavigationApp() {
-
-    val navController = rememberNavController()
-
-    NavHost(
-        navController = navController,
-        startDestination = "home"
-    ) {
-
-        composable("home") {
-
-            EcranHome(
-                onRegionClick = { nom, id ->
-
-                    navController.navigate(
-                        "pokedex/$nom/$id"
-                    )
-                }
-            )
-        }
-
-        composable(
-            route = "pokedex/{nom}/{id}",
-        ) { backStackEntry ->
-
-            val nom = backStackEntry.arguments?.getString("nom") ?: ""
-            val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
-
-            EcranPokedex(
-                nomRegion = nom,
-                idPokedex = id
-            )
-        }
-    }
-}
-
-
-/*@Preview(showBackground = true)
-@Composable
-private fun EcranHomePreview() {
-    LivingDexTheme {
-        EcranHome(
-            chargerRegions = {
-                hashMapOf("Kanto" to 1, "Johto" to 2, "Hoenn" to 3, "Sinnoh" to 4)
-            }
-        )
-    }
-}*/
