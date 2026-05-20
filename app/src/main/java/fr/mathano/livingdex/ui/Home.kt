@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,15 +34,16 @@ import fr.mathano.livingdex.ui.theme.LivingDexTheme
 @Composable
 fun EcranHome(
     modifier: Modifier = Modifier,
-    chargerRegions: suspend () -> List<String> = PokeApiClient::recupererRegions,
+    chargerRegions: suspend (String) -> List<String> = PokeApiClient::recupererRegions,
 ) {
     var state by remember { mutableStateOf<RegionsState>(RegionsState.Loading) }
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
+    val language = Locale.current.language
 
-    LaunchedEffect(chargerRegions) {
+    LaunchedEffect(chargerRegions, language) {
         state = try {
-            RegionsState.Success(chargerRegions())
+            RegionsState.Success(chargerRegions(language))
         } catch (exception: Exception) {
             RegionsState.Error
         }
@@ -74,7 +76,7 @@ fun EcranHome(
 private sealed interface RegionsState {
     data object Loading : RegionsState
     data object Error : RegionsState
-    data class Success(val regions: List<String>) : RegionsState
+    class Success(val regions: List<String>) : RegionsState
 }
 
 @Composable
