@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import fr.mathano.livingdex.R
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
 @Composable
@@ -45,7 +44,7 @@ private fun CarreArrondi(
             .aspectRatio(1f)
             .background(
                 color = Color(0xFFD9D9D9),
-                shape = RoundedCornerShape(R.integer.arrondi.dp)
+                shape = RoundedCornerShape(14.dp)
             )
     )
 }
@@ -57,4 +56,3 @@ private fun EcranHomePreview() {
         EcranHome()
     }
 }
-

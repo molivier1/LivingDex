@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,25 +18,17 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
-import kotlin.math.hypot
 
 enum class AppDestination(
     val label: String,
@@ -70,110 +61,55 @@ private fun LivingDexMenuContent(
     modifier: Modifier = Modifier,
 ) {
     val menuBarHeight = 78.dp
-    val pokeBallSize = 101.dp
-    val pokeBallAssetSize = pokeBallSize * 2f
 
-    Box(
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(menuBarHeight + pokeBallSize / 2f)
+            .height(menuBarHeight)
+            .background(Color.Black)
+            .padding(horizontal = 29.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(menuBarHeight)
-                .background(Color.Black)
-                .padding(horizontal = 29.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        MenuIconButton(
+            destination = AppDestination.HOME,
+            onDestinationSelected = onDestinationSelected
         ) {
-            MenuIconButton(
-                destination = AppDestination.HOME,
-                onDestinationSelected = onDestinationSelected
-            ) {
-                MenuImageIcon(
-                    resourceId = if (currentDestination == AppDestination.HOME) {
-                        R.drawable.home_plein
-                    } else {
-                        R.drawable.home
-                    },
-                    contentDescription = AppDestination.HOME.label,
-                    modifier = Modifier.size(52.dp)
-                )
-            }
-
-            MenuIconButton(
-                destination = AppDestination.PROFIL,
-                onDestinationSelected = onDestinationSelected
-            ) {
-                MenuImageIcon(
-                    resourceId = if (currentDestination == AppDestination.PROFIL) {
-                        R.drawable.utilisateur_plein
-                    } else {
-                        R.drawable.utilisateur
-                    },
-                    contentDescription = AppDestination.PROFIL.label,
-                    modifier = Modifier.size(52.dp)
-                )
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .size(pokeBallSize)
-                .clipToBounds()
-                .circularTapTarget(pokeBallSize) {
-                    onDestinationSelected(AppDestination.RECHERCHER)
+            MenuImageIcon(
+                resourceId = if (currentDestination == AppDestination.HOME) {
+                    R.drawable.home_plein
+                } else {
+                    R.drawable.home
                 },
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ball),
-                contentDescription = AppDestination.RECHERCHER.label,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.size(pokeBallAssetSize)
+                contentDescription = AppDestination.HOME.label,
+                modifier = Modifier.size(52.dp)
             )
         }
 
-        Text(
-            text = AppDestination.RECHERCHER.label,
-            color = Color.White,
-            fontSize = 17.sp,
-            lineHeight = 21.sp,
-            fontWeight = if (currentDestination == AppDestination.RECHERCHER) {
-                FontWeight.Medium
-            } else {
-                FontWeight.Normal
-            },
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = pokeBallSize - 7.dp)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { onDestinationSelected(AppDestination.RECHERCHER) }
-        )
-    }
-}
+        MenuIconButton(
+            destination = AppDestination.RECHERCHER,
+            onDestinationSelected = onDestinationSelected
+        ) {
+            MenuImageIcon(
+                resourceId = R.drawable.ball,
+                contentDescription = AppDestination.RECHERCHER.label,
+                modifier = Modifier.size(62.dp)
+            )
+        }
 
-// Merci l'IA
-private fun Modifier.circularTapTarget(
-    size: Dp,
-    onTap: () -> Unit,
-): Modifier = this.pointerInput(size, onTap) {
-    val radius = size.toPx() / 2f
-    val center = Offset(radius, radius)
-
-    detectTapGestures { offset ->
-        val distanceFromCenter = hypot(
-            x = offset.x - center.x,
-            y = offset.y - center.y
-        )
-
-        if (distanceFromCenter <= radius) {
-            onTap()
+        MenuIconButton(
+            destination = AppDestination.PROFIL,
+            onDestinationSelected = onDestinationSelected
+        ) {
+            MenuImageIcon(
+                resourceId = if (currentDestination == AppDestination.PROFIL) {
+                    R.drawable.utilisateur_plein
+                } else {
+                    R.drawable.utilisateur
+                },
+                contentDescription = AppDestination.PROFIL.label,
+                modifier = Modifier.size(52.dp)
+            )
         }
     }
 }
