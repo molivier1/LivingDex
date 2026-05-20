@@ -3,7 +3,7 @@ package fr.mathano.livingdex.data
 import co.pokeapi.pokekotlin.PokeApi
 
 object Regions {
-    suspend fun recupererRegions(language: String): List<String> {
+    suspend fun recupererRegions(locale: String): List<String> {
         val regions = mutableListOf<String>()
 
         for (regionRaw in PokeApi.getRegionList(0, 100).results) {
@@ -11,7 +11,7 @@ object Regions {
 
             regions.add(
                 region.names.firstOrNull { langue ->
-                    langue.name == language
+                    langue.language.name == locale
                 }?.name?: region.name.toDisplayName())
         }
 

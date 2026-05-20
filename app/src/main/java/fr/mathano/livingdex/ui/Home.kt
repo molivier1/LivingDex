@@ -39,11 +39,11 @@ fun EcranHome(
     var state by remember { mutableStateOf<RegionsState>(RegionsState.Loading) }
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
-    val language = Locale.current.language
+    val locale = Locale.current.language
 
-    LaunchedEffect(chargerRegions, language) {
+    LaunchedEffect(chargerRegions, locale) {
         state = try {
-            RegionsState.Success(chargerRegions(language))
+            RegionsState.Success(chargerRegions(locale))
         } catch (exception: Exception) {
             RegionsState.Error
         }
