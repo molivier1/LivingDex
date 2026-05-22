@@ -28,7 +28,9 @@ object Pokedex {
 
                 val sprite = pokemon.sprites.frontDefault.toString()
 
-                DataPokemon(idPokemon, nom, sprite)
+                val entryDex = pokemonEntry.entryNumber
+
+                DataPokemon(idPokemon, nom, sprite, entryDex)
             }
         }.awaitAll()
     }

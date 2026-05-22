@@ -98,25 +98,27 @@ private fun CarreArrondi(
     onClick: (String, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = modifier
-            .aspectRatio(1f)
-            .background(
-                color = Color(0xFFD9D9D9),
-                shape = RoundedCornerShape(cornerRadius)
+    if (idPokedex != -1) {
+        Box(
+            modifier = modifier
+                .aspectRatio(1f)
+                .background(
+                    color = Color(0xFFD9D9D9),
+                    shape = RoundedCornerShape(cornerRadius)
+                )
+                .clickable {
+                    onClick(label, idPokedex)
+                }
+                .padding(12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = label,
+                color = Color.Black,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium
             )
-            .clickable {
-                onClick(label, idPokedex)
-            }
-            .padding(12.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = label,
-            color = Color.Black,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Medium
-        )
+        }
     }
 }
 

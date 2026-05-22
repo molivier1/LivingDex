@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.Pokedex
 import fr.mathano.livingdex.data.model.DataPokemon
@@ -87,11 +89,13 @@ fun EcranPokedex(
                 }
 
                 is PokedexState.Success -> {
-                    items(currentState.pokemons.toList()) { (idPokemon: Int, nom: String, urlSprite: String) ->
+                    items(currentState.pokemons.toList()) { (idPokemon: Int, nom: String, urlSprite: String, entryDex: Int) ->
                         CarrePokemon(
                             label = nom,
                             cornerRadius = cornerRadius,
-                            onClick = onPokemonClick
+                            onClick = onPokemonClick,
+                            entryDex = entryDex,
+                            urlSprite = urlSprite
                         )
                     }
                 }
@@ -112,6 +116,8 @@ private fun CarrePokemon(
     cornerRadius: androidx.compose.ui.unit.Dp,
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    entryDex: Int = -1,
+    urlSprite: String = ""
 ) {
     Box(
         modifier = modifier
@@ -123,13 +129,39 @@ private fun CarrePokemon(
             .clickable {
                 onClick(label)
             }
-            .padding(12.dp),
-        contentAlignment = Alignment.Center
+            .padding(12.dp)
     ) {
+        // ID en haut à gauche
+        if (entryDex != -1) {
+            Text(
+                text = "#$entryDex",
+                modifier = Modifier.align(Alignment.TopStart),
+                color = Color(0xFF666666),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Light
+            )
+        }
+
+        // Image (AsyncImage) au centre
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .align(Alignment.Center),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                model = urlSprite,
+                contentDescription = "Image de $label",
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        // Nom en bas au centre
         Text(
             text = label,
+            modifier = Modifier.align(Alignment.BottomCenter),
             color = Color.Black,
-            fontSize = 18.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Medium
         )
     }
