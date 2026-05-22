@@ -27,13 +27,6 @@ import fr.mathano.livingdex.ui.theme.LivingDexTheme
 import java.util.logging.Logger
 
 class MainActivity : ComponentActivity() {
-    companion object {
-        val logger: Logger
-            get() {
-                return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
-            }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

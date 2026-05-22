@@ -40,7 +40,6 @@ fun EcranPokedex(
     onPokemonClick: (String) -> Unit = {_ -> },
     recupererPokedexParRegion: suspend (Int) -> List<DataPokemon> = Pokedex::recupererPokedexParRegion,
 ) {
-    val locale = Locale.current.language
     var state by remember { mutableStateOf<PokedexState>(PokedexState.Loading) }
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp

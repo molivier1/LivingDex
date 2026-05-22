@@ -40,16 +40,15 @@ import fr.mathano.livingdex.ui.theme.LivingDexTheme
 fun EcranHome(
     modifier: Modifier = Modifier,
     onRegionClick: (String, Int) -> Unit = { _, _ -> },
-    chargerRegions: suspend (String) -> List<DataRegion> = Regions::recupererRegions,
+    chargerRegions: suspend () -> List<DataRegion> = Regions::recupererRegions,
 ) {
     var state by remember { mutableStateOf<RegionsState>(RegionsState.Loading) }
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
-    val locale = Locale.current.language
 
-    LaunchedEffect(chargerRegions, locale) {
+    LaunchedEffect(chargerRegions) {
         state = try {
-            RegionsState.Success(chargerRegions(locale))
+            RegionsState.Success(chargerRegions())
         } catch (exception: Exception) {
             RegionsState.Error
         }
