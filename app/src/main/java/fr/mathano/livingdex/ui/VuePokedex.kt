@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,14 +45,6 @@ fun EcranPokedex(
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text(
-            text = "Region: $nomRegion\nPokedex ID: $idPokedex"
-        )
-    }
-
     LaunchedEffect (recupererPokedexParRegion, idPokedex) {
         state = try {
             PokedexState.Success(recupererPokedexParRegion(idPokedex))
@@ -60,29 +53,48 @@ fun EcranPokedex(
         }
     }
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(columnCount),
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color(0xFFF4F4F4)),
-        contentPadding = PaddingValues(18.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        when (val currentState = state) {
-            is PokedexState.Loading -> {
-                items(8) { CarrePokemon(label = "", cornerRadius = cornerRadius, onClick = onPokemonClick) }
-            }
-            is PokedexState.Error -> {
-                item { Text("Erreur API") }
-            }
-            is PokedexState.Success -> {
-                items(currentState.pokemons.toList()) { (idPokemon: Int, nom: String, urlSprite: String) ->
-                    CarrePokemon(
-                        label = nom,
-                        cornerRadius = cornerRadius,
-                        onClick = onPokemonClick
-                    )
+    Column(modifier = modifier
+        .fillMaxSize()
+        .background(Color(0xFFF4F4F4))) {
+        Text(
+            text = "Région : $nomRegion",
+            modifier = Modifier.padding(16.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(columnCount),
+            modifier = modifier
+                .fillMaxSize()
+                .background(Color(0xFFF4F4F4)),
+            contentPadding = PaddingValues(18.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            when (val currentState = state) {
+                is PokedexState.Loading -> {
+                    items(8) {
+                        CarrePokemon(
+                            label = "",
+                            cornerRadius = cornerRadius,
+                            onClick = onPokemonClick
+                        )
+                    }
+                }
+
+                is PokedexState.Error -> {
+                    item { Text("Erreur API") }
+                }
+
+                is PokedexState.Success -> {
+                    items(currentState.pokemons.toList()) { (idPokemon: Int, nom: String, urlSprite: String) ->
+                        CarrePokemon(
+                            label = nom,
+                            cornerRadius = cornerRadius,
+                            onClick = onPokemonClick
+                        )
+                    }
                 }
             }
         }

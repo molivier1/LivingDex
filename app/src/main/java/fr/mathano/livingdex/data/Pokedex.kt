@@ -3,24 +3,25 @@ package fr.mathano.livingdex.data
 import co.pokeapi.pokekotlin.PokeApi
 import co.pokeapi.pokekotlin.PokeApi.Default.get
 import fr.mathano.livingdex.data.model.DataPokemon
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 
 object Pokedex {
-    suspend fun recupererPokedexParRegion(idPokedex: Int): List<DataPokemon> {
-        val listeDataPokemon = mutableListOf<DataPokemon>()
+    suspend fun recupererPokedexParRegion(idPokedex: Int): List<DataPokemon> = withContext(Dispatchers.IO) {
+        PokeApi.getPokedex(idPokedex).pokemonEntries.map { pokemonEntry ->
+            async {
+                val pokemon = pokemonEntry.pokemonSpecies.get().varieties.first().variety.get()
 
-        PokeApi.getPokedex(idPokedex).pokemonEntries.forEach { pokemonEntry ->
+                val idPokemon = pokemon.id
 
-            val pokemon = pokemonEntry.pokemonSpecies.get().varieties.first().variety.get()
+                val nom = pokemonEntry.pokemonSpecies.name
 
-            val idPokemon = pokemon.id
+                val sprite = pokemon.sprites.frontDefault.toString()
 
-            val nom = pokemonEntry.pokemonSpecies.name
-
-            val sprite = pokemon.sprites.frontDefault.toString()
-
-            listeDataPokemon.add(DataPokemon(idPokemon, nom, sprite))
-        }
-
-        return listeDataPokemon
+                DataPokemon(idPokemon, nom, sprite)
+            }
+        }.awaitAll()
     }
 }
