@@ -52,6 +52,10 @@ fun LivingDexApp() {
             LivingDexMenu(
                 currentDestination = selectedMenuDestination,
                 onDestinationSelected = { destination ->
+                    if (destination == selectedMenuDestination) {
+                        return@LivingDexMenu
+                    }
+
                     currentDestination = destination
                     selectedMenuDestination = destination
 
