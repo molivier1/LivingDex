@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import fr.mathano.livingdex.data.local.DatabaseProvider
 import fr.mathano.livingdex.ui.AppDestination
 import fr.mathano.livingdex.ui.LivingDexMenu
+import fr.mathano.livingdex.ui.NavigationRecherche
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
 class MainActivity : ComponentActivity() {
@@ -84,7 +85,12 @@ fun LivingDexApp() {
                 )
             }
 
-            AppDestination.RECHERCHER,
+            AppDestination.RECHERCHER -> {
+                NavigationRecherche(
+                    modifier = Modifier.padding(innerPadding)
+                )
+            }
+
             AppDestination.PROFIL -> {
                 Box(
                     modifier = Modifier

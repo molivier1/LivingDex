@@ -15,6 +15,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 
 object Pokedex {
+    private const val NATIONAL_POKEDEX_ID = 1
+
     suspend fun recupererPokedexParRegion(idPokedex: Int): List<DataPokemon> = withContext(Dispatchers.IO) {
         val locale = Locale.current.language
         val pokeDao = DatabaseProvider.pokeDao
@@ -50,6 +52,9 @@ object Pokedex {
 
         return@withContext pokemons
     }
+
+    suspend fun recupererPokedexNational(): List<DataPokemon> =
+        recupererPokedexParRegion(NATIONAL_POKEDEX_ID)
 
     suspend fun recupererEntriesCapturees(idPokedex: Int): Set<Int> = withContext(Dispatchers.IO) {
         DatabaseProvider.pokeDao
