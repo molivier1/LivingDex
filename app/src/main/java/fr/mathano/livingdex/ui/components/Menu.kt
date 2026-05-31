@@ -1,4 +1,4 @@
-package fr.mathano.livingdex.ui
+package fr.mathano.livingdex.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image

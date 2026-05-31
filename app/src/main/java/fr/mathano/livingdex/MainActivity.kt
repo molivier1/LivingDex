@@ -22,8 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.sp
 import fr.mathano.livingdex.data.local.DatabaseProvider
-import fr.mathano.livingdex.ui.AppDestination
-import fr.mathano.livingdex.ui.LivingDexMenu
+import fr.mathano.livingdex.ui.components.AppDestination
+import fr.mathano.livingdex.ui.components.LivingDexMenu
 import fr.mathano.livingdex.ui.theme.LivingDexBackgroundGradient
 import fr.mathano.livingdex.ui.NavigationRecherche
 import fr.mathano.livingdex.ui.theme.LivingDexTheme

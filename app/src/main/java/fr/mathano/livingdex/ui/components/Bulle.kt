@@ -1,4 +1,4 @@
-package fr.mathano.livingdex.ui.theme
+package fr.mathano.livingdex.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import fr.mathano.livingdex.ui.theme.LivingDexBubbleGradient
 
 @Composable
 fun Bulle(

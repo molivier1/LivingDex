@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,7 +36,8 @@ import coil.compose.AsyncImage
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.Pokedex
 import fr.mathano.livingdex.data.model.DataPokemon
-import fr.mathano.livingdex.ui.theme.Bulle
+import fr.mathano.livingdex.ui.components.BarreRecherche
+import fr.mathano.livingdex.ui.components.Bulle
 import kotlinx.coroutines.launch
 
 @Composable
@@ -102,13 +102,9 @@ fun EcranPokedex(
         }
 
         Bulle {
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                singleLine = true,
-                label = { Text("Rechercher", color = Color.Black) }
+            BarreRecherche(
+                valeur = searchQuery,
+                onValeurChange = { searchQuery = it }
             )
         }
 

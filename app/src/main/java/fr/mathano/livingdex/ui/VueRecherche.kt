@@ -11,14 +11,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +38,8 @@ import coil.compose.AsyncImage
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.Pokedex
 import fr.mathano.livingdex.data.model.DataPokemon
-import fr.mathano.livingdex.ui.theme.Bulle
+import fr.mathano.livingdex.ui.components.BarreRecherche
+import fr.mathano.livingdex.ui.components.Bulle
 
 @Composable
 fun NavigationRecherche(
@@ -131,14 +130,11 @@ fun EcranRecherche(
                 )
             }
 
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
+            BarreRecherche(
+                valeur = searchQuery,
+                onValeurChange = { searchQuery = it },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                singleLine = true,
-                label = { Text("Rechercher", color = Color.Black) }
+                    .padding(top = 12.dp)
             )
         }
 
