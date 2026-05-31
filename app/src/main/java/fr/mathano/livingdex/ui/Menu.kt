@@ -45,7 +45,11 @@ fun LivingDexMenu(
     onDestinationSelected: (AppDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.Black)
+    ) {
         LivingDexMenuContent(
             currentDestination = currentDestination,
             onDestinationSelected = onDestinationSelected

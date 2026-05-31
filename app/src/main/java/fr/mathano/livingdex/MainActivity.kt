@@ -65,6 +65,7 @@ fun LivingDexApp() {
         when (currentDestination) {
             AppDestination.HOME -> {
                 fr.mathano.livingdex.ui.NavigationApp(
+                    modifier = Modifier.padding(innerPadding),
                     homeResetSignal = homeResetSignal,
                     onHomeRootChanged = { isHomeRoot ->
                         selectedMenuDestination = if (isHomeRoot) {

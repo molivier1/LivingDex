@@ -126,6 +126,7 @@ private fun CarreArrondi(
 
 @Composable
 fun NavigationApp(
+    modifier: Modifier = Modifier,
     homeResetSignal: Int = 0,
     onHomeRootChanged: (Boolean) -> Unit = {},
 ) {
@@ -149,7 +150,8 @@ fun NavigationApp(
 
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = "home",
+        modifier = modifier
     ) {
 
         composable("home") {
