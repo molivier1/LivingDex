@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -141,17 +143,18 @@ fun NavigationApp(
 
     LaunchedEffect(homeResetSignal) {
         if (homeResetSignal > 0) {
-            navController.navigate("home") {
-                popUpTo("home")
-                launchSingleTop = true
-            }
+            navController.popBackStack("home", inclusive = false)
         }
     }
 
     NavHost(
         navController = navController,
         startDestination = "home",
-        modifier = modifier
+        modifier = modifier,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None }
     ) {
 
         composable("home") {

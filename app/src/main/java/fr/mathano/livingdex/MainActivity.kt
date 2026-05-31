@@ -56,10 +56,13 @@ fun LivingDexApp() {
                         return@LivingDexMenu
                     }
 
+                    val wasInHomeSection = currentDestination == AppDestination.HOME
+                    val wasOnHomeRoot = selectedMenuDestination == AppDestination.HOME
+
                     currentDestination = destination
                     selectedMenuDestination = destination
 
-                    if (destination == AppDestination.HOME) {
+                    if (destination == AppDestination.HOME && wasInHomeSection && !wasOnHomeRoot) {
                         homeResetSignal++
                     }
                 }
