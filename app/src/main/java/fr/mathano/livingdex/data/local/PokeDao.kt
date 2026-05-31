@@ -1,6 +1,7 @@
 package fr.mathano.livingdex.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -35,4 +36,21 @@ interface PokeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPokemonDetail(pokemonDetail: PokemonDetailEntity)
+
+    @Query("SELECT * FROM pokemon_progress WHERE idPokedex = :idPokedex")
+    suspend fun getPokemonProgress(idPokedex: Int): List<PokemonProgressEntity>
+
+    @Query(
+        """
+        SELECT * FROM pokemon_progress
+        WHERE idPokedex = :idPokedex AND entryDex = :entryDex
+        """
+    )
+    suspend fun getPokemonProgressEntry(idPokedex: Int, entryDex: Int): PokemonProgressEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPokemonProgress(progress: PokemonProgressEntity)
+
+    @Delete
+    suspend fun deletePokemonProgress(progress: PokemonProgressEntity)
 }

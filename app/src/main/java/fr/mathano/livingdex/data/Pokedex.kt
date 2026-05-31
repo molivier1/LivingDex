@@ -4,6 +4,7 @@ import androidx.compose.ui.text.intl.Locale
 import co.pokeapi.pokekotlin.PokeApi
 import co.pokeapi.pokekotlin.PokeApi.Default.get
 import fr.mathano.livingdex.data.local.DatabaseProvider
+import fr.mathano.livingdex.data.local.PokemonProgressEntity
 import fr.mathano.livingdex.data.local.toDataPokemon
 import fr.mathano.livingdex.data.local.toPokedexPokemonEntity
 import fr.mathano.livingdex.data.model.DataPokemon
@@ -48,5 +49,34 @@ object Pokedex {
         )
 
         return@withContext pokemons
+    }
+
+    suspend fun recupererEntriesCapturees(idPokedex: Int): Set<Int> = withContext(Dispatchers.IO) {
+        DatabaseProvider.pokeDao
+            .getPokemonProgress(idPokedex)
+            .map { it.entryDex }
+            .toSet()
+    }
+
+    suspend fun changerCapturePokemon(idPokedex: Int, pokemon: DataPokemon): Boolean = withContext(Dispatchers.IO) {
+        val pokeDao = DatabaseProvider.pokeDao
+        val progressionExistante = pokeDao.getPokemonProgressEntry(
+            idPokedex = idPokedex,
+            entryDex = pokemon.entryDex
+        )
+
+        if (progressionExistante != null) {
+            pokeDao.deletePokemonProgress(progressionExistante)
+            return@withContext false
+        }
+
+        pokeDao.insertPokemonProgress(
+            PokemonProgressEntity(
+                idPokedex = idPokedex,
+                entryDex = pokemon.entryDex,
+                idPokemon = pokemon.idPokemon
+            )
+        )
+        return@withContext true
     }
 }

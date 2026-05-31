@@ -9,7 +9,8 @@ import androidx.room.RoomDatabase
     entities = [
         RegionEntity::class,
         PokedexPokemonEntity::class,
-        PokemonDetailEntity::class
+        PokemonDetailEntity::class,
+        PokemonProgressEntity::class
     ],
     version = 1,
     exportSchema = false
