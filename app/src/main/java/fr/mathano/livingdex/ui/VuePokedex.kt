@@ -69,8 +69,7 @@ fun EcranPokedex(
     }
 
     Column(modifier = modifier
-        .fillMaxSize()
-        .background(Color(0xFFF4F4F4))) {
+        .fillMaxSize()) {
         Text(
             text = "Région : $nomRegion",
             modifier = Modifier.padding(16.dp),
@@ -111,8 +110,7 @@ fun EcranPokedex(
         LazyVerticalGrid(
             columns = GridCells.Fixed(columnCount),
             modifier = modifier
-                .fillMaxSize()
-                .background(Color(0xFFF4F4F4)),
+                .fillMaxSize(),
             contentPadding = PaddingValues(18.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)

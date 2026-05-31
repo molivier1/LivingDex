@@ -44,7 +44,6 @@ fun EcranPokemonDetail(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFFF4F4F4))
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)

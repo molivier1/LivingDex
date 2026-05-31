@@ -113,7 +113,6 @@ fun EcranRecherche(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFFF4F4F4))
     ) {
         Text(
             text = "Pokedex national",
@@ -144,8 +143,7 @@ fun EcranRecherche(
         LazyVerticalGrid(
             columns = GridCells.Fixed(columnCount),
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF4F4F4)),
+                .fillMaxSize(),
             contentPadding = PaddingValues(18.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)

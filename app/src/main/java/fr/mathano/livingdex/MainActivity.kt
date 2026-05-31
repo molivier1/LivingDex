@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import fr.mathano.livingdex.data.local.DatabaseProvider
 import fr.mathano.livingdex.ui.AppDestination
 import fr.mathano.livingdex.ui.LivingDexMenu
+import fr.mathano.livingdex.ui.theme.LivingDexBackgroundGradient
 import fr.mathano.livingdex.ui.NavigationRecherche
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
@@ -48,7 +49,10 @@ fun LivingDexApp() {
     var homeResetSignal by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(LivingDexBackgroundGradient),
+        containerColor = Color.Transparent,
         bottomBar = {
             LivingDexMenu(
                 currentDestination = selectedMenuDestination,
@@ -95,7 +99,6 @@ fun LivingDexApp() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(0xFFF4F4F4))
                         .padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
