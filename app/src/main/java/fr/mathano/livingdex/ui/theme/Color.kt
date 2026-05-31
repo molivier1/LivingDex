@@ -17,3 +17,10 @@ val LivingDexBackgroundGradient: Brush = Brush.verticalGradient(
         Color(0xFF181F54)
     )
 )
+
+val LivingDexBubbleGradient: Brush = Brush.radialGradient(
+    colorStops = arrayOf(
+        0.4f to Color(0xFF8FF7FF),
+        1f to Color(0xFF90D5FF)
+    )
+)

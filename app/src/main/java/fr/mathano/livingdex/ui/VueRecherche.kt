@@ -40,6 +40,7 @@ import coil.compose.AsyncImage
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.Pokedex
 import fr.mathano.livingdex.data.model.DataPokemon
+import fr.mathano.livingdex.ui.theme.Bulle
 
 @Composable
 fun NavigationRecherche(
@@ -114,31 +115,32 @@ fun EcranRecherche(
         modifier = modifier
             .fillMaxSize()
     ) {
-        Text(
-            text = "Pokedex national",
-            modifier = Modifier.padding(16.dp),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        if (state is RechercheState.Success && (state as RechercheState.Success).isLoading) {
+        Bulle {
             Text(
-                text = "Chargement... ${(state as RechercheState.Success).pokemons.size} Pokemon",
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
+                text = "Pokedex national",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            if (state is RechercheState.Success && (state as RechercheState.Success).isLoading) {
+                Text(
+                    text = "Chargement... ${(state as RechercheState.Success).pokemons.size} Pokemon",
+                    modifier = Modifier.padding(top = 4.dp),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                singleLine = true,
+                label = { Text("Rechercher") }
             )
         }
-
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, top = 12.dp, end = 16.dp),
-            singleLine = true,
-            label = { Text("Rechercher") }
-        )
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(columnCount),

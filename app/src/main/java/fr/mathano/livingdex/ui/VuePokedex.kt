@@ -31,13 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.Pokedex
 import fr.mathano.livingdex.data.model.DataPokemon
+import fr.mathano.livingdex.ui.theme.Bulle
 import kotlinx.coroutines.launch
 
 @Composable
@@ -70,42 +70,45 @@ fun EcranPokedex(
 
     Column(modifier = modifier
         .fillMaxSize()) {
-        Text(
-            text = "Région : $nomRegion",
-            modifier = Modifier.padding(16.dp),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        if (state is PokedexState.Success) {
-            val totalPokemon = (state as PokedexState.Success).pokemons.size
-            val pokemonCaptures = entriesCapturees.size
-            val progress = if (totalPokemon == 0) 0f else pokemonCaptures.toFloat() / totalPokemon
-
+        Bulle {
             Text(
-                text = "$pokemonCaptures / $totalPokemon",
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
+                text = "Région : $nomRegion",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
             )
 
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 6.dp, end = 16.dp)
-            )
+            if (state is PokedexState.Success) {
+                val totalPokemon = (state as PokedexState.Success).pokemons.size
+                val pokemonCaptures = entriesCapturees.size
+                val progress =
+                    if (totalPokemon == 0) 0f else pokemonCaptures.toFloat() / totalPokemon
+
+                Text(
+                    text = "$pokemonCaptures / $totalPokemon",
+                    modifier = Modifier.padding(top = 8.dp),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+
+                LinearProgressIndicator(
+                    progress = { progress },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp)
+                )
+            }
         }
 
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, top = 12.dp, end = 16.dp),
-            singleLine = true,
-            label = { Text("Rechercher") }
-        )
+        Bulle {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                singleLine = true,
+                label = { Text("Rechercher") }
+            )
+        }
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(columnCount),
