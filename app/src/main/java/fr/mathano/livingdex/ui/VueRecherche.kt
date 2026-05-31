@@ -2,21 +2,14 @@ package fr.mathano.livingdex.ui
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,9 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,12 +25,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.Pokedex
 import fr.mathano.livingdex.data.model.DataPokemon
 import fr.mathano.livingdex.ui.components.BarreRecherche
 import fr.mathano.livingdex.ui.components.Bulle
+import fr.mathano.livingdex.ui.components.CarrePokemon
 
 @Composable
 fun NavigationRecherche(
@@ -149,7 +140,7 @@ fun EcranRecherche(
             when (val currentState = state) {
                 RechercheState.Loading -> {
                     items(8) {
-                        CarrePokemonNational(
+                        CarrePokemon(
                             label = "",
                             cornerRadius = cornerRadius,
                             onLongClick = onPokemonLongClick
@@ -167,13 +158,13 @@ fun EcranRecherche(
                     }
 
                     items(pokemonsFiltres) { pokemon ->
-                        CarrePokemonNational(
+                        CarrePokemon(
                             label = pokemon.nom,
                             cornerRadius = cornerRadius,
-                            onLongClick = onPokemonLongClick,
                             idPokemon = pokemon.idPokemon,
                             entryDex = pokemon.entryDex,
-                            urlSprite = pokemon.urlSprite
+                            urlSprite = pokemon.urlSprite,
+                            onLongClick = onPokemonLongClick
                         )
                     }
                 }
@@ -189,65 +180,4 @@ private sealed interface RechercheState {
         val pokemons: List<DataPokemon>,
         val isLoading: Boolean,
     ) : RechercheState
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun CarrePokemonNational(
-    label: String,
-    cornerRadius: androidx.compose.ui.unit.Dp,
-    onLongClick: (Int, Int) -> Unit,
-    modifier: Modifier = Modifier,
-    idPokemon: Int = -1,
-    entryDex: Int = -1,
-    urlSprite: String = "",
-) {
-    Box(
-        modifier = modifier
-            .aspectRatio(1f)
-            .background(
-                color = Color(0xFFD9D9D9),
-                shape = RoundedCornerShape(cornerRadius)
-            )
-            .combinedClickable(
-                onClick = {},
-                onLongClick = {
-                    if (idPokemon != -1) {
-                        onLongClick(idPokemon, entryDex)
-                    }
-                }
-            )
-            .padding(12.dp)
-    ) {
-        if (entryDex != -1) {
-            Text(
-                text = "#$entryDex",
-                modifier = Modifier.align(Alignment.TopStart),
-                color = Color.Black,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Light
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .size(64.dp)
-                .align(Alignment.Center),
-            contentAlignment = Alignment.Center
-        ) {
-            AsyncImage(
-                model = urlSprite,
-                contentDescription = "Image de $label",
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-        Text(
-            text = label,
-            modifier = Modifier.align(Alignment.BottomCenter),
-            color = Color.Black,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
 }

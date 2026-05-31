@@ -1,21 +1,14 @@
 package fr.mathano.livingdex.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,19 +18,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.Pokedex
 import fr.mathano.livingdex.data.model.DataPokemon
 import fr.mathano.livingdex.ui.components.BarreRecherche
 import fr.mathano.livingdex.ui.components.Bulle
+import fr.mathano.livingdex.ui.components.CarrePokemon
 import kotlinx.coroutines.launch
 
 @Composable
@@ -45,7 +37,7 @@ fun EcranPokedex(
     modifier: Modifier = Modifier,
     nomRegion: String,
     idPokedex: Int,
-    onPokemonClick: (String) -> Unit = {_ -> },
+    onPokemonClick: (String) -> Unit = { _ -> },
     onPokemonLongClick: (Int, Int) -> Unit = { _, _ -> },
     recupererPokedexParRegion: suspend (Int) -> List<DataPokemon> = Pokedex::recupererPokedexParRegion,
     recupererEntriesCapturees: suspend (Int) -> Set<Int> = Pokedex::recupererEntriesCapturees,
@@ -58,7 +50,7 @@ fun EcranPokedex(
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
 
-    LaunchedEffect (recupererPokedexParRegion, recupererEntriesCapturees, idPokedex) {
+    LaunchedEffect(recupererPokedexParRegion, recupererEntriesCapturees, idPokedex) {
         state = try {
             val pokemons = recupererPokedexParRegion(idPokedex)
             entriesCapturees = recupererEntriesCapturees(idPokedex)
@@ -68,8 +60,10 @@ fun EcranPokedex(
         }
     }
 
-    Column(modifier = modifier
-        .fillMaxSize()) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
         Bulle {
             Text(
                 text = "Région : $nomRegion",
@@ -80,8 +74,11 @@ fun EcranPokedex(
             if (state is PokedexState.Success) {
                 val totalPokemon = (state as PokedexState.Success).pokemons.size
                 val pokemonCaptures = entriesCapturees.size
-                val progress =
-                    if (totalPokemon == 0) 0f else pokemonCaptures.toFloat() / totalPokemon
+                val progress = if (totalPokemon == 0) {
+                    0f
+                } else {
+                    pokemonCaptures.toFloat() / totalPokemon
+                }
 
                 Text(
                     text = "$pokemonCaptures / $totalPokemon",
@@ -122,7 +119,6 @@ fun EcranPokedex(
                         CarrePokemon(
                             label = "",
                             cornerRadius = cornerRadius,
-                            onClick = {},
                             onLongClick = onPokemonLongClick
                         )
                     }
@@ -143,6 +139,10 @@ fun EcranPokedex(
                         CarrePokemon(
                             label = nom,
                             cornerRadius = cornerRadius,
+                            idPokemon = idPokemon,
+                            entryDex = entryDex,
+                            urlSprite = urlSprite,
+                            isCaptured = entryDex in entriesCapturees,
                             onClick = {
                                 coroutineScope.launch {
                                     val estCapture = changerCapturePokemon(idPokedex, pokemon)
@@ -154,11 +154,7 @@ fun EcranPokedex(
                                 }
                                 onPokemonClick(nom)
                             },
-                            onLongClick = onPokemonLongClick,
-                            idPokemon = idPokemon,
-                            entryDex = entryDex,
-                            urlSprite = urlSprite,
-                            isCaptured = entryDex in entriesCapturees
+                            onLongClick = onPokemonLongClick
                         )
                     }
                 }
@@ -171,70 +167,4 @@ private sealed interface PokedexState {
     data object Loading : PokedexState
     data object Error : PokedexState
     class Success(val pokemons: List<DataPokemon>) : PokedexState
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun CarrePokemon(
-    label: String,
-    cornerRadius: androidx.compose.ui.unit.Dp,
-    onClick: () -> Unit,
-    onLongClick: (Int, Int) -> Unit,
-    modifier: Modifier = Modifier,
-    idPokemon: Int = -1,
-    entryDex: Int = -1,
-    urlSprite: String = "",
-    isCaptured: Boolean = false
-) {
-    Box(
-        modifier = modifier
-            .aspectRatio(1f)
-            .background(
-                color = if (isCaptured) Color(0xFF9E9E9E) else Color(0xFFD9D9D9),
-                shape = RoundedCornerShape(cornerRadius)
-            )
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = {
-                    if (idPokemon != -1) {
-                        onLongClick(idPokemon, entryDex)
-                    }
-                }
-            )
-            .padding(12.dp)
-    ) {
-        // ID en haut à gauche
-        if (entryDex != -1) {
-            Text(
-                text = "#$entryDex",
-                modifier = Modifier.align(Alignment.TopStart),
-                color = Color.Black,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Light
-            )
-        }
-
-        // Image (AsyncImage) au centre
-        Box(
-            modifier = Modifier
-                .size(64.dp)
-                .align(Alignment.Center),
-            contentAlignment = Alignment.Center
-        ) {
-            AsyncImage(
-                model = urlSprite,
-                contentDescription = "Image de $label",
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-        // Nom en bas au centre
-        Text(
-            text = label,
-            modifier = Modifier.align(Alignment.BottomCenter),
-            color = Color.Black,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
 }
