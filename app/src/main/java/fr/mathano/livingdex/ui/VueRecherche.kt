@@ -80,18 +80,33 @@ fun NavigationRecherche(
 fun EcranRecherche(
     modifier: Modifier = Modifier,
     onPokemonLongClick: (Int, Int) -> Unit = { _, _ -> },
-    recupererPokedexNational: suspend () -> List<DataPokemon> = Pokedex::recupererPokedexNational,
+    recupererPokedexNationalProgressif: suspend ((List<DataPokemon>) -> Unit) -> Unit =
+        Pokedex::recupererPokedexNationalProgressif,
 ) {
     var state by remember { mutableStateOf<RechercheState>(RechercheState.Loading) }
     var searchQuery by remember { mutableStateOf("") }
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
 
-    LaunchedEffect(recupererPokedexNational) {
-        state = try {
-            RechercheState.Success(recupererPokedexNational())
+    LaunchedEffect(recupererPokedexNationalProgressif) {
+        try {
+            recupererPokedexNationalProgressif { pokemons ->
+                state = RechercheState.Success(pokemons, isLoading = true)
+            }
+
+            val currentState = state
+            state = if (currentState is RechercheState.Success) {
+                currentState.copy(isLoading = false)
+            } else {
+                RechercheState.Success(emptyList(), isLoading = false)
+            }
         } catch (exception: Exception) {
-            RechercheState.Error
+            val currentState = state
+            state = if (currentState is RechercheState.Success && currentState.pokemons.isNotEmpty()) {
+                currentState.copy(isLoading = false)
+            } else {
+                RechercheState.Error
+            }
         }
     }
 
@@ -106,6 +121,15 @@ fun EcranRecherche(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
+
+        if (state is RechercheState.Success && (state as RechercheState.Success).isLoading) {
+            Text(
+                text = "Chargement... ${(state as RechercheState.Success).pokemons.size} Pokemon",
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
 
         OutlinedTextField(
             value = searchQuery,
@@ -165,7 +189,10 @@ fun EcranRecherche(
 private sealed interface RechercheState {
     data object Loading : RechercheState
     data object Error : RechercheState
-    class Success(val pokemons: List<DataPokemon>) : RechercheState
+    data class Success(
+        val pokemons: List<DataPokemon>,
+        val isLoading: Boolean,
+    ) : RechercheState
 }
 
 @OptIn(ExperimentalFoundationApi::class)
