@@ -41,7 +41,7 @@ fun EcranPokedex(
     nomRegion: String,
     idPokedex: Int,
     onPokemonClick: (String) -> Unit = {_ -> },
-    onPokemonLongClick: (Int) -> Unit = { _ -> },
+    onPokemonLongClick: (Int, Int) -> Unit = { _, _ -> },
     recupererPokedexParRegion: suspend (Int) -> List<DataPokemon> = Pokedex::recupererPokedexParRegion,
 ) {
     var state by remember { mutableStateOf<PokedexState>(PokedexState.Loading) }
@@ -121,7 +121,7 @@ private fun CarrePokemon(
     label: String,
     cornerRadius: androidx.compose.ui.unit.Dp,
     onClick: (String) -> Unit,
-    onLongClick: (Int) -> Unit,
+    onLongClick: (Int, Int) -> Unit,
     modifier: Modifier = Modifier,
     idPokemon: Int = -1,
     entryDex: Int = -1,
@@ -138,7 +138,7 @@ private fun CarrePokemon(
                 onClick = { onClick(label) },
                 onLongClick = {
                     if (idPokemon != -1) {
-                        onLongClick(idPokemon)
+                        onLongClick(idPokemon, entryDex)
                     }
                 }
             )

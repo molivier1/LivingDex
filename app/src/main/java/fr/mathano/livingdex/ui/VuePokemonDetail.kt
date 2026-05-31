@@ -26,6 +26,7 @@ import fr.mathano.livingdex.data.model.DataPokemonDetail
 @Composable
 fun EcranPokemonDetail(
     idPokemon: Int,
+    entryDex: Int,
     modifier: Modifier = Modifier,
     recupererPokemonDetail: suspend (Int) -> DataPokemonDetail = PokemonDetails::recupererPokemonDetail,
 ) {
@@ -71,7 +72,8 @@ fun EcranPokemonDetail(
                     modifier = Modifier.size(128.dp)
                 )
 
-                Text("ID : ${pokemon.idPokemon}")
+                Text("National : #${pokemon.idPokemon}")
+                Text("Regional : #$entryDex")
                 Text("Taille : ${pokemon.taille}")
                 Text("Poids : ${pokemon.poids}")
             }

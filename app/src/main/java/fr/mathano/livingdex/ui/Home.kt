@@ -155,20 +155,22 @@ fun NavigationApp() {
             EcranPokedex(
                 nomRegion = nom,
                 idPokedex = id,
-                onPokemonLongClick = { idPokemon ->
-                    navController.navigate("pokemon/$idPokemon")
+                onPokemonLongClick = { idPokemon, entryDex ->
+                    navController.navigate("pokemon/$idPokemon/$entryDex")
                 }
             )
         }
 
         composable(
-            route = "pokemon/{idPokemon}",
+            route = "pokemon/{idPokemon}/{entryDex}",
         ) { backStackEntry ->
 
             val idPokemon = backStackEntry.arguments?.getString("idPokemon")?.toInt() ?: 0
+            val entryDex = backStackEntry.arguments?.getString("entryDex")?.toInt() ?: 0
 
             EcranPokemonDetail(
-                idPokemon = idPokemon
+                idPokemon = idPokemon,
+                entryDex = entryDex
             )
         }
     }
