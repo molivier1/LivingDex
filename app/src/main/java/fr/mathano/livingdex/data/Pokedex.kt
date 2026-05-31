@@ -46,6 +46,7 @@ object Pokedex {
         pokeDao.insertPokedexPokemons(
             pokemons.map { it.toPokedexPokemonEntity(idPokedex, locale) }
         )
-        pokemons
+
+        return@withContext pokemons
     }
 }

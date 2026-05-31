@@ -1,7 +1,8 @@
 package fr.mathano.livingdex.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ fun EcranPokedex(
     nomRegion: String,
     idPokedex: Int,
     onPokemonClick: (String) -> Unit = {_ -> },
+    onPokemonLongClick: (Int) -> Unit = { _ -> },
     recupererPokedexParRegion: suspend (Int) -> List<DataPokemon> = Pokedex::recupererPokedexParRegion,
 ) {
     var state by remember { mutableStateOf<PokedexState>(PokedexState.Loading) }
@@ -79,7 +81,8 @@ fun EcranPokedex(
                         CarrePokemon(
                             label = "",
                             cornerRadius = cornerRadius,
-                            onClick = onPokemonClick
+                            onClick = onPokemonClick,
+                            onLongClick = onPokemonLongClick
                         )
                     }
                 }
@@ -94,6 +97,8 @@ fun EcranPokedex(
                             label = nom,
                             cornerRadius = cornerRadius,
                             onClick = onPokemonClick,
+                            onLongClick = onPokemonLongClick,
+                            idPokemon = idPokemon,
                             entryDex = entryDex,
                             urlSprite = urlSprite
                         )
@@ -110,12 +115,15 @@ private sealed interface PokedexState {
     class Success(val pokemons: List<DataPokemon>) : PokedexState
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CarrePokemon(
     label: String,
     cornerRadius: androidx.compose.ui.unit.Dp,
     onClick: (String) -> Unit,
+    onLongClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    idPokemon: Int = -1,
     entryDex: Int = -1,
     urlSprite: String = ""
 ) {
@@ -126,9 +134,14 @@ private fun CarrePokemon(
                 color = Color(0xFFD9D9D9),
                 shape = RoundedCornerShape(cornerRadius)
             )
-            .clickable {
-                onClick(label)
-            }
+            .combinedClickable(
+                onClick = { onClick(label) },
+                onLongClick = {
+                    if (idPokemon != -1) {
+                        onLongClick(idPokemon)
+                    }
+                }
+            )
             .padding(12.dp)
     ) {
         // ID en haut à gauche

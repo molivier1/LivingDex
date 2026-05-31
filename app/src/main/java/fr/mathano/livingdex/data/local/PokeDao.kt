@@ -24,4 +24,15 @@ interface PokeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPokedexPokemons(pokemons: List<PokedexPokemonEntity>)
+
+    @Query(
+        """
+        SELECT * FROM pokemon_details
+        WHERE idPokemon = :idPokemon AND language = :language
+        """
+    )
+    suspend fun getPokemonDetail(idPokemon: Int, language: String): PokemonDetailEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPokemonDetail(pokemonDetail: PokemonDetailEntity)
 }

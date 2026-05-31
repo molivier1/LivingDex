@@ -8,7 +8,8 @@ import androidx.room.RoomDatabase
 @Database(
     entities = [
         RegionEntity::class,
-        PokedexPokemonEntity::class
+        PokedexPokemonEntity::class,
+        PokemonDetailEntity::class
     ],
     version = 1,
     exportSchema = false
