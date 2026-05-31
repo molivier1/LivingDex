@@ -94,7 +94,9 @@ fun EcranPokedex(
                     progress = { progress },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 6.dp)
+                        .padding(top = 6.dp),
+                    color = Color.Black,
+                    trackColor = Color.White
                 )
             }
         }
@@ -106,7 +108,7 @@ fun EcranPokedex(
                 modifier = Modifier
                     .fillMaxWidth(),
                 singleLine = true,
-                label = { Text("Rechercher") }
+                label = { Text("Rechercher", color = Color.Black) }
             )
         }
 
@@ -210,7 +212,7 @@ private fun CarrePokemon(
             Text(
                 text = "#$entryDex",
                 modifier = Modifier.align(Alignment.TopStart),
-                color = Color(0xFF666666),
+                color = Color.Black,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Light
             )
