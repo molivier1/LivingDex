@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,6 +60,7 @@ fun EcranPokemonDetail(
 
             is PokemonDetailState.Success -> {
                 val pokemon = currentState.pokemon
+                val isFrench = Locale.current.language == "fr"
 
                 Text(
                     text = pokemon.nom,
@@ -74,8 +76,8 @@ fun EcranPokemonDetail(
 
                 Text("National : #${pokemon.idPokemon}")
                 Text("Regional : #$entryDex")
-                Text("Taille : ${pokemon.taille}")
-                Text("Poids : ${pokemon.poids}")
+                Text("Taille : ${pokemon.taille.formattedHeight(isFrench)}")
+                Text("Poids : ${pokemon.poids.formattedWeight(isFrench)}")
             }
         }
     }
@@ -86,3 +88,22 @@ private sealed interface PokemonDetailState {
     data object Error : PokemonDetailState
     class Success(val pokemon: DataPokemonDetail) : PokemonDetailState
 }
+
+private fun Int.formattedHeight(isFrench: Boolean): String {
+    return if (isFrench) {
+        "${formatOneDecimal(this / 10f)} m"
+    } else {
+        "$this dm"
+    }
+}
+
+private fun Int.formattedWeight(isFrench: Boolean): String {
+    return if (isFrench) {
+        "${formatOneDecimal(this / 10f)} kg"
+    } else {
+        "$this hg"
+    }
+}
+
+private fun formatOneDecimal(value: Float): String =
+    "%.1f".format(java.util.Locale.FRANCE, value)
