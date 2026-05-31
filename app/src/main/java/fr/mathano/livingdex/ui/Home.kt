@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.Regions
@@ -124,9 +125,27 @@ private fun CarreArrondi(
 
 
 @Composable
-fun NavigationApp() {
+fun NavigationApp(
+    homeResetSignal: Int = 0,
+    onHomeRootChanged: (Boolean) -> Unit = {},
+) {
 
     val navController = rememberNavController()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+
+    LaunchedEffect(currentRoute) {
+        onHomeRootChanged(currentRoute == "home")
+    }
+
+    LaunchedEffect(homeResetSignal) {
+        if (homeResetSignal > 0) {
+            navController.navigate("home") {
+                popUpTo("home")
+                launchSingleTop = true
+            }
+        }
+    }
 
     NavHost(
         navController = navController,

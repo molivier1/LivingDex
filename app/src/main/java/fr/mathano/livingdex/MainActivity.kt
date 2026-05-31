@@ -43,19 +43,37 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LivingDexApp() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestination.HOME) }
+    var selectedMenuDestination by rememberSaveable { mutableStateOf<AppDestination?>(AppDestination.HOME) }
+    var homeResetSignal by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             LivingDexMenu(
-                currentDestination = currentDestination,
-                onDestinationSelected = { currentDestination = it }
+                currentDestination = selectedMenuDestination,
+                onDestinationSelected = { destination ->
+                    currentDestination = destination
+                    selectedMenuDestination = destination
+
+                    if (destination == AppDestination.HOME) {
+                        homeResetSignal++
+                    }
+                }
             )
         }
     ) { innerPadding ->
         when (currentDestination) {
             AppDestination.HOME -> {
-                fr.mathano.livingdex.ui.NavigationApp()
+                fr.mathano.livingdex.ui.NavigationApp(
+                    homeResetSignal = homeResetSignal,
+                    onHomeRootChanged = { isHomeRoot ->
+                        selectedMenuDestination = if (isHomeRoot) {
+                            AppDestination.HOME
+                        } else {
+                            null
+                        }
+                    }
+                )
             }
 
             AppDestination.RECHERCHER,

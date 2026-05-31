@@ -41,7 +41,7 @@ enum class AppDestination(
 
 @Composable
 fun LivingDexMenu(
-    currentDestination: AppDestination,
+    currentDestination: AppDestination?,
     onDestinationSelected: (AppDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -56,7 +56,7 @@ fun LivingDexMenu(
 
 @Composable
 private fun LivingDexMenuContent(
-    currentDestination: AppDestination,
+    currentDestination: AppDestination?,
     onDestinationSelected: (AppDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
