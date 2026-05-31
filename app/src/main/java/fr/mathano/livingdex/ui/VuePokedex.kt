@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +47,7 @@ fun EcranPokedex(
     recupererPokedexParRegion: suspend (Int) -> List<DataPokemon> = Pokedex::recupererPokedexParRegion,
 ) {
     var state by remember { mutableStateOf<PokedexState>(PokedexState.Loading) }
+    var searchQuery by remember { mutableStateOf("") }
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
 
@@ -64,6 +67,16 @@ fun EcranPokedex(
             modifier = Modifier.padding(16.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
+        )
+
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 12.dp, end = 16.dp),
+            singleLine = true,
+            label = { Text("Rechercher") }
         )
 
         LazyVerticalGrid(
@@ -92,7 +105,11 @@ fun EcranPokedex(
                 }
 
                 is PokedexState.Success -> {
-                    items(currentState.pokemons.toList()) { (idPokemon: Int, nom: String, urlSprite: String, entryDex: Int) ->
+                    val pokemonsFiltres = currentState.pokemons.filter { pokemon ->
+                        pokemon.nom.contains(searchQuery, ignoreCase = true)
+                    }
+
+                    items(pokemonsFiltres) { (idPokemon: Int, nom: String, urlSprite: String, entryDex: Int) ->
                         CarrePokemon(
                             label = nom,
                             cornerRadius = cornerRadius,
