@@ -20,6 +20,16 @@
     <string name="language_ru">🇷🇺 Russo</string>
     <string name="language_ja">🇯🇵 Giapponese</string>
     <string name="language_zh">🇨🇳 Cinese</string>
+    <string name="region_kanto">Kanto</string>
+    <string name="region_johto">Johto</string>
+    <string name="region_hoenn">Hoenn</string>
+    <string name="region_sinnoh">Sinnoh</string>
+    <string name="region_unova">Unima</string>
+    <string name="region_kalos">Kalos</string>
+    <string name="region_alola">Alola</string>
+    <string name="region_galar">Galar</string>
+    <string name="region_hisui">Hisui</string>
+    <string name="region_paldea">Paldea</string>
     <string name="pokemon_image_description">Immagine di %1$s</string>
     <string name="pokedex_sheet_title">Scheda Pokedex</string>
     <string name="types_title">Tipi</string>

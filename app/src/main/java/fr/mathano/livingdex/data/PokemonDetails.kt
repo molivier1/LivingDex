@@ -22,6 +22,7 @@ object PokemonDetails {
 
     suspend fun recupererPokemonDetail(idPokemon: Int): DataPokemonDetail = withContext(Dispatchers.IO) {
         val locale = AppLanguage.current()
+        val apiLocale = AppLanguage.pokeApiLanguage()
         val pokeDao = DatabaseProvider.pokeDao
 
         val pokemonEnBase = pokeDao.getPokemonDetail(idPokemon, locale)
@@ -33,7 +34,7 @@ object PokemonDetails {
         val pokemonSpecies = pokemon.species.get()
 
         val nom = pokemonSpecies.names.firstOrNull {
-            it.language.name == locale
+            it.language.name.equals(apiLocale, ignoreCase = true)
         }?.name ?: pokemon.name.toDisplayName()
 
         val types = pokemon.types
@@ -41,7 +42,7 @@ object PokemonDetails {
             .map { typeSlot ->
                 async {
                     runCatching {
-                        recupererNomType(typeSlot.type.name, locale)
+                        recupererNomType(typeSlot.type.name)
                     }.getOrDefault(typeSlot.type.name.toDisplayName())
                 }
             }
@@ -55,7 +56,9 @@ object PokemonDetails {
             }
             .map { (pokemonAbility, abilityHandle) ->
                 async {
-                    val nomTalent = abilityHandle.get().names.firstOrNull { it.language.name == locale }?.name
+                    val nomTalent = abilityHandle.get().names.firstOrNull {
+                        it.language.name.equals(apiLocale, ignoreCase = true)
+                    }?.name
                         ?: abilityHandle.name.toDisplayName()
 
                     if (pokemonAbility.isHidden) {
@@ -74,7 +77,7 @@ object PokemonDetails {
             taille = pokemon.height,
             poids = pokemon.weight,
             types = types,
-            description = pokemonSpecies.description(locale),
+            description = pokemonSpecies.description(apiLocale),
             talents = talents,
             evolutions = runCatching {
                 recupererEvolutions(pokemonSpecies)
@@ -93,15 +96,16 @@ object PokemonDetails {
             ?.replace("\n", " ")
             ?.replace("\u000c", " ")
 
-    private fun recupererNomType(typeName: String, locale: String): String {
+    private fun recupererNomType(typeName: String): String {
         val response = URL("$POKEAPI_BASE_URL/type/$typeName").readText()
         val names = JSONObject(response).getJSONArray("names")
+        val apiLocale = AppLanguage.pokeApiLanguage()
 
         for (index in 0 until names.length()) {
             val nameEntry = names.getJSONObject(index)
             val language = nameEntry.getJSONObject("language").getString("name")
 
-            if (language == locale) {
+            if (language.equals(apiLocale, ignoreCase = true)) {
                 return nameEntry.getString("name")
             }
         }

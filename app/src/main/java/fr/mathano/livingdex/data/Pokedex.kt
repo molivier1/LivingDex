@@ -20,6 +20,7 @@ object Pokedex {
 
     suspend fun recupererPokedexParRegion(idPokedex: Int): List<DataPokemon> = withContext(Dispatchers.IO) {
         val locale = AppLanguage.current()
+        val apiLocale = AppLanguage.pokeApiLanguage()
         val pokeDao = DatabaseProvider.pokeDao
 
         val pokemonsEnBase = pokeDao.getPokedexPokemons(idPokedex, locale)
@@ -32,7 +33,7 @@ object Pokedex {
 
         pokemonEntries.chunked(POKEMON_FETCH_BATCH_SIZE).forEach { pokemonEntryBatch ->
             val pokemonsBatch = pokemonEntryBatch.map { pokemonEntry ->
-                async { pokemonEntry.toDataPokemon(locale) }
+                async { pokemonEntry.toDataPokemon(apiLocale) }
             }.awaitAll()
 
             pokemons.addAll(pokemonsBatch)
@@ -52,6 +53,7 @@ object Pokedex {
         onPokemonsLoaded: (List<DataPokemon>) -> Unit,
     ) = withContext(Dispatchers.IO) {
         val locale = AppLanguage.current()
+        val apiLocale = AppLanguage.pokeApiLanguage()
         val pokeDao = DatabaseProvider.pokeDao
         val pokemonsParEntryDex = linkedMapOf<Int, DataPokemon>()
 
@@ -75,7 +77,7 @@ object Pokedex {
 
         missingPokemonEntries.chunked(POKEMON_FETCH_BATCH_SIZE).forEach { pokemonEntryBatch ->
             val pokemonsBatch = pokemonEntryBatch.map { pokemonEntry ->
-                async { pokemonEntry.toDataPokemon(locale) }
+                async { pokemonEntry.toDataPokemon(apiLocale) }
             }.awaitAll()
 
             pokeDao.insertPokedexPokemons(
@@ -121,7 +123,7 @@ object Pokedex {
         return@withContext true
     }
 
-    private suspend fun PokemonEntry.toDataPokemon(locale: String): DataPokemon {
+    private suspend fun PokemonEntry.toDataPokemon(apiLocale: String): DataPokemon {
         val species = pokemonSpecies.get()
 
         val pokemon = species.varieties.first().variety.get()
@@ -129,7 +131,7 @@ object Pokedex {
         val idPokemon = pokemon.id
 
         val nom = species.names.firstOrNull {
-            it.language.name == locale
+            it.language.name.equals(apiLocale, ignoreCase = true)
         }?.name ?: species.name.toDisplayName()
 
         val sprite = pokemon.sprites.frontDefault.toString()

@@ -28,6 +28,14 @@ object AppLanguage {
     fun current(): String =
         selectedLanguage.value
 
+    fun pokeApiLanguage(): String {
+        return when (current()) {
+            "ja" -> "ja-hrkt"
+            "zh-Hans" -> "zh-hans"
+            else -> current()
+        }
+    }
+
     fun set(language: String) {
         val supportedLanguage = language.toSupportedLanguage()
         selectedLanguage.value = supportedLanguage

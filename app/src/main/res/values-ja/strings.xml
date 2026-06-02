@@ -20,6 +20,16 @@
     <string name="language_ru">🇷🇺 ロシア語</string>
     <string name="language_ja">🇯🇵 日本語</string>
     <string name="language_zh">🇨🇳 中国語</string>
+    <string name="region_kanto">カントー</string>
+    <string name="region_johto">ジョウト</string>
+    <string name="region_hoenn">ホウエン</string>
+    <string name="region_sinnoh">シンオウ</string>
+    <string name="region_unova">イッシュ</string>
+    <string name="region_kalos">カロス</string>
+    <string name="region_alola">アローラ</string>
+    <string name="region_galar">ガラル</string>
+    <string name="region_hisui">ヒスイ</string>
+    <string name="region_paldea">パルデア</string>
     <string name="pokemon_image_description">%1$sの画像</string>
     <string name="pokedex_sheet_title">ポケモン図鑑</string>
     <string name="types_title">タイプ</string>

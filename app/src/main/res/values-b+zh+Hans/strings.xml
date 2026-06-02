@@ -20,6 +20,16 @@
     <string name="language_ru">🇷🇺 俄语</string>
     <string name="language_ja">🇯🇵 日语</string>
     <string name="language_zh">🇨🇳 中文</string>
+    <string name="region_kanto">关都</string>
+    <string name="region_johto">城都</string>
+    <string name="region_hoenn">丰缘</string>
+    <string name="region_sinnoh">神奥</string>
+    <string name="region_unova">合众</string>
+    <string name="region_kalos">卡洛斯</string>
+    <string name="region_alola">阿罗拉</string>
+    <string name="region_galar">伽勒尔</string>
+    <string name="region_hisui">洗翠</string>
+    <string name="region_paldea">帕底亚</string>
     <string name="pokemon_image_description">%1$s 的图片</string>
     <string name="pokedex_sheet_title">图鉴资料</string>
     <string name="types_title">属性</string>
