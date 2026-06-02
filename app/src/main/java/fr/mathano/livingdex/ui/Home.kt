@@ -5,9 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,9 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -39,8 +40,9 @@ import fr.mathano.livingdex.data.AppLanguage
 import fr.mathano.livingdex.data.Regions
 import fr.mathano.livingdex.data.model.DataRegion
 import fr.mathano.livingdex.ui.components.Bulle
+import fr.mathano.livingdex.ui.components.TailleContent
+import fr.mathano.livingdex.ui.components.TailleTitre
 import fr.mathano.livingdex.ui.components.livingDexString
-import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
 @Composable
 fun EcranHome(
@@ -61,29 +63,54 @@ fun EcranHome(
         }
     }
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(columnCount),
+    Column(
         modifier = modifier
-            .fillMaxSize(),
-        contentPadding = PaddingValues(18.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .fillMaxSize()
     ) {
-        when (val currentState = state) {
-            is RegionsState.Loading -> {
-                items(8) { CarreArrondi(label = "", cornerRadius = cornerRadius, idPokedex = 0, onClick = onRegionClick) }
-            }
-            is RegionsState.Error -> {
-                item { Text(livingDexString(R.string.error_api)) }
-            }
-            is RegionsState.Success -> {
-                items(currentState.regions.toList()) { (idRegion, nomRegion, idPokedex) ->
-                    CarreArrondi(
-                        label = nomRegion,
-                        cornerRadius = cornerRadius,
-                        idPokedex = idPokedex,
-                        onClick = onRegionClick
-                    )
+        Bulle {
+            Text(
+                text = livingDexString(R.string.app_name),
+                modifier = Modifier.fillMaxWidth(),
+                color = Color.Black,
+                fontSize = TailleTitre,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(columnCount),
+            modifier = Modifier
+                .fillMaxSize(),
+            contentPadding = PaddingValues(18.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            when (val currentState = state) {
+                is RegionsState.Loading -> {
+                    items(8) {
+                        CarreArrondi(
+                            label = "",
+                            cornerRadius = cornerRadius,
+                            idPokedex = 0,
+                            onClick = onRegionClick
+                        )
+                    }
+                }
+
+                is RegionsState.Error -> {
+                    item { Text(livingDexString(R.string.error_api)) }
+                }
+
+                is RegionsState.Success -> {
+                    items(currentState.regions.toList()) { (_, nomRegion, idPokedex) ->
+                        CarreArrondi(
+                            label = nomRegion,
+                            cornerRadius = cornerRadius,
+                            idPokedex = idPokedex,
+                            onClick = onRegionClick
+                        )
+                    }
                 }
             }
         }
@@ -121,7 +148,7 @@ private fun CarreArrondi(
             Text(
                 text = label,
                 color = Color.Black,
-                fontSize = 18.sp,
+                fontSize = TailleContent,
                 fontWeight = FontWeight.Medium
             )
         }

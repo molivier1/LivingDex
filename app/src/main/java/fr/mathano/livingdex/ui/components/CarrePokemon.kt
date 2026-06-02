@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import fr.mathano.livingdex.R
 
@@ -56,7 +55,7 @@ fun CarrePokemon(
                 text = "#$entryDex",
                 modifier = Modifier.align(Alignment.TopStart),
                 color = Color.Black,
-                fontSize = 12.sp,
+                fontSize = TailleContent,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -78,7 +77,7 @@ fun CarrePokemon(
             text = label,
             modifier = Modifier.align(Alignment.BottomCenter),
             color = Color.Black,
-            fontSize = 14.sp,
+            fontSize = TailleContent,
             fontWeight = FontWeight.Medium
         )
     }

@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.AppLanguage
 import fr.mathano.livingdex.data.Pokedex
@@ -31,6 +31,8 @@ import fr.mathano.livingdex.data.model.DataPokemon
 import fr.mathano.livingdex.ui.components.BarreRecherche
 import fr.mathano.livingdex.ui.components.Bulle
 import fr.mathano.livingdex.ui.components.CarrePokemon
+import fr.mathano.livingdex.ui.components.TailleContent
+import fr.mathano.livingdex.ui.components.TailleTitre
 import fr.mathano.livingdex.ui.components.livingDexString
 import kotlinx.coroutines.launch
 
@@ -71,8 +73,11 @@ fun EcranPokedex(
         Bulle {
             Text(
                 text = livingDexString(R.string.region_title, nomRegion),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                modifier = Modifier.fillMaxWidth(),
+                color = Color.Black,
+                fontSize = TailleTitre,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
 
             if (state is PokedexState.Success) {
@@ -87,7 +92,7 @@ fun EcranPokedex(
                 Text(
                     text = "$pokemonCaptures / $totalPokemon",
                     modifier = Modifier.padding(top = 8.dp),
-                    fontSize = 14.sp,
+                    fontSize = TailleContent,
                     fontWeight = FontWeight.Medium
                 )
 

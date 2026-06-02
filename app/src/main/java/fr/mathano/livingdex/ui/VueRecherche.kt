@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -18,10 +19,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +34,8 @@ import fr.mathano.livingdex.data.model.DataPokemon
 import fr.mathano.livingdex.ui.components.BarreRecherche
 import fr.mathano.livingdex.ui.components.Bulle
 import fr.mathano.livingdex.ui.components.CarrePokemon
+import fr.mathano.livingdex.ui.components.TailleContent
+import fr.mathano.livingdex.ui.components.TailleTitre
 import fr.mathano.livingdex.ui.components.livingDexString
 
 @Composable
@@ -114,8 +118,11 @@ fun EcranRecherche(
         Bulle {
             Text(
                 text = livingDexString(R.string.pokedex_national),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                modifier = Modifier.fillMaxWidth(),
+                color = Color.Black,
+                fontSize = TailleTitre,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
 
             if (state is RechercheState.Success && (state as RechercheState.Success).isLoading) {
@@ -125,7 +132,7 @@ fun EcranRecherche(
                         (state as RechercheState.Success).pokemons.size
                     ),
                     modifier = Modifier.padding(top = 4.dp),
-                    fontSize = 14.sp,
+                    fontSize = TailleContent,
                     fontWeight = FontWeight.Medium
                 )
             }

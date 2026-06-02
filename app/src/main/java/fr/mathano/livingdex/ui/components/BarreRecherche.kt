@@ -21,8 +21,17 @@ fun BarreRecherche(
         onValueChange = onValeurChange,
         modifier = modifier.fillMaxWidth(),
         singleLine = true,
-        textStyle = LocalTextStyle.current.copy(color = Color.Black),
-        label = { Text(livingDexString(R.string.search_hint), color = Color.Black) },
+        textStyle = LocalTextStyle.current.copy(
+            color = Color.Black,
+            fontSize = TailleContent
+        ),
+        label = {
+            Text(
+                text = livingDexString(R.string.search_hint),
+                color = Color.Black,
+                fontSize = TailleContent
+            )
+        },
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Color.Black,
             unfocusedBorderColor = Color.Black,

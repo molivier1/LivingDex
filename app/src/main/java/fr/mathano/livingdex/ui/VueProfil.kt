@@ -27,13 +27,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.AppLanguage
 import fr.mathano.livingdex.ui.components.Bulle
+import fr.mathano.livingdex.ui.components.TailleContent
+import fr.mathano.livingdex.ui.components.TailleTitre
 import fr.mathano.livingdex.ui.components.livingDexString
 
 @Composable
@@ -79,10 +80,11 @@ private fun EcranProfil(
 
         Text(
             text = livingDexString(R.string.profile_title),
+            modifier = Modifier.align(Alignment.Center),
             color = Color.Black,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.align(Alignment.Center)
+            fontSize = TailleTitre,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -142,7 +144,7 @@ private fun EcranSettings(
                 text = livingDexString(R.string.language_title),
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.Black,
-                fontSize = 32.sp,
+                fontSize = TailleTitre,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
@@ -159,7 +161,7 @@ private fun EcranSettings(
                     text = language.label(selectedLanguage == language.code),
                     modifier = Modifier.fillMaxWidth(),
                     color = Color.Black,
-                    fontSize = 22.sp,
+                    fontSize = TailleContent,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )

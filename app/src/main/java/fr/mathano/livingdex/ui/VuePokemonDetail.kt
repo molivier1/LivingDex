@@ -24,13 +24,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.AppLanguage
 import fr.mathano.livingdex.data.PokemonDetails
 import fr.mathano.livingdex.data.model.DataPokemonDetail
 import fr.mathano.livingdex.ui.components.Bulle
+import fr.mathano.livingdex.ui.components.TailleContent
+import fr.mathano.livingdex.ui.components.TailleTitre
 import fr.mathano.livingdex.ui.components.livingDexString
 import fr.mathano.livingdex.ui.theme.LivingDexBubbleGradient
 
@@ -80,7 +81,7 @@ fun EcranPokemonDetail(
                         text = livingDexString(R.string.pokedex_sheet_title),
                         modifier = Modifier.fillMaxWidth(),
                         color = Color.Black,
-                        fontSize = 32.sp,
+                        fontSize = TailleTitre,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
@@ -88,7 +89,7 @@ fun EcranPokemonDetail(
                         text = pokemon.enteteNumero(idPokedex, entryDex),
                         modifier = Modifier.fillMaxWidth(),
                         color = Color.Black,
-                        fontSize = 20.sp,
+                        fontSize = TailleContent,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center
                     )
@@ -195,7 +196,7 @@ private fun SectionDetail(
             text = titre,
             modifier = Modifier.fillMaxWidth(),
             color = Color.Black,
-            fontSize = 32.sp,
+            fontSize = TailleTitre,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
@@ -203,7 +204,7 @@ private fun SectionDetail(
             text = valeur,
             modifier = Modifier.fillMaxWidth(),
             color = Color.Black,
-            fontSize = 20.sp,
+            fontSize = TailleContent,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center
         )
