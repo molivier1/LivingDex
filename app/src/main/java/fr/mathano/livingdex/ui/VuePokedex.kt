@@ -1,14 +1,20 @@
 package fr.mathano.livingdex.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.AppLanguage
@@ -50,6 +57,7 @@ fun EcranPokedex(
     var state by remember { mutableStateOf<PokedexState>(PokedexState.Loading) }
     var searchQuery by remember { mutableStateOf("") }
     var entriesCapturees by remember { mutableStateOf<Set<Int>>(emptySet()) }
+    var afficherSeulementNonCaptures by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
@@ -108,10 +116,24 @@ fun EcranPokedex(
         }
 
         Bulle {
-            BarreRecherche(
-                valeur = searchQuery,
-                onValeurChange = { searchQuery = it }
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BarreRecherche(
+                    valeur = searchQuery,
+                    onValeurChange = { searchQuery = it },
+                    modifier = Modifier.weight(1f)
+                )
+
+                FiltreNonCapturesButton(
+                    isActive = afficherSeulementNonCaptures,
+                    onClick = {
+                        afficherSeulementNonCaptures = !afficherSeulementNonCaptures
+                    }
+                )
+            }
         }
 
         LazyVerticalGrid(
@@ -139,7 +161,8 @@ fun EcranPokedex(
 
                 is PokedexState.Success -> {
                     val pokemonsFiltres = currentState.pokemons.filter { pokemon ->
-                        pokemon.nom.contains(searchQuery, ignoreCase = true)
+                        pokemon.nom.contains(searchQuery, ignoreCase = true) &&
+                            (!afficherSeulementNonCaptures || pokemon.entryDex !in entriesCapturees)
                     }
 
                     items(pokemonsFiltres) { pokemon ->
@@ -176,4 +199,28 @@ private sealed interface PokedexState {
     data object Loading : PokedexState
     data object Error : PokedexState
     class Success(val pokemons: List<DataPokemon>) : PokedexState
+}
+
+@Composable
+private fun FiltreNonCapturesButton(
+    isActive: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .size(64.dp)
+            .background(
+                color = if (isActive) Color(0xFF9E9E9E) else Color(0xFFD9D9D9),
+                shape = RoundedCornerShape(14.dp)
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "✓",
+            fontSize = TailleContent,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
