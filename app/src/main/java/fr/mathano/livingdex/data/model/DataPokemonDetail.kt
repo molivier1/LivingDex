@@ -6,4 +6,8 @@ data class DataPokemonDetail(
     val urlSprite: String,
     val taille: Int,
     val poids: Int,
+    val types: List<String>,
+    val description: String?,
+    val talents: List<String>,
+    val evolutions: List<String>,
 )

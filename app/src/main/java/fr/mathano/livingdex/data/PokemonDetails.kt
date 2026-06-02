@@ -3,15 +3,23 @@ package fr.mathano.livingdex.data
 import androidx.compose.ui.text.intl.Locale
 import co.pokeapi.pokekotlin.PokeApi
 import co.pokeapi.pokekotlin.PokeApi.Default.get
+import co.pokeapi.pokekotlin.model.ChainLink
+import co.pokeapi.pokekotlin.model.EvolutionDetail
+import co.pokeapi.pokekotlin.model.PokemonSpecies
 import fr.mathano.livingdex.data.local.DatabaseProvider
 import fr.mathano.livingdex.data.local.toDataPokemonDetail
 import fr.mathano.livingdex.data.local.toPokemonDetailEntity
 import fr.mathano.livingdex.data.model.DataPokemonDetail
 import fr.mathano.livingdex.toDisplayName
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.net.URL
 
 object PokemonDetails {
+    private const val POKEAPI_BASE_URL = "https://pokeapi.co/api/v2"
+
     suspend fun recupererPokemonDetail(idPokemon: Int): DataPokemonDetail = withContext(Dispatchers.IO) {
         val locale = Locale.current.language
         val pokeDao = DatabaseProvider.pokeDao
@@ -28,16 +36,131 @@ object PokemonDetails {
             it.language.name == locale
         }?.name ?: pokemon.name.toDisplayName()
 
+        val types = pokemon.types
+            .sortedBy { it.slot }
+            .map { typeSlot ->
+                async {
+                    runCatching {
+                        recupererNomType(typeSlot.type.name, locale)
+                    }.getOrDefault(typeSlot.type.name.toDisplayName())
+                }
+            }
+            .map { it.await() }
+
+        val talents = pokemon.abilities
+            .mapNotNull { pokemonAbility ->
+                pokemonAbility.ability?.let { abilityHandle ->
+                    pokemonAbility to abilityHandle
+                }
+            }
+            .map { (pokemonAbility, abilityHandle) ->
+                async {
+                    val nomTalent = abilityHandle.get().names.firstOrNull { it.language.name == locale }?.name
+                        ?: abilityHandle.name.toDisplayName()
+
+                    if (pokemonAbility.isHidden) {
+                        "$nomTalent (cache)"
+                    } else {
+                        nomTalent
+                    }
+                }
+            }
+            .map { it.await() }
+
         val detail = DataPokemonDetail(
             idPokemon = pokemon.id,
             nom = nom,
             urlSprite = pokemon.sprites.frontDefault.orEmpty(),
             taille = pokemon.height,
-            poids = pokemon.weight
+            poids = pokemon.weight,
+            types = types,
+            description = pokemonSpecies.description(locale),
+            talents = talents,
+            evolutions = runCatching {
+                recupererEvolutions(pokemonSpecies)
+            }.getOrDefault(emptyList())
         )
 
         pokeDao.insertPokemonDetail(detail.toPokemonDetailEntity(locale))
 
         return@withContext detail
     }
+
+    private fun PokemonSpecies.description(locale: String): String? =
+        flavorTextEntries
+            .firstOrNull { it.language.name == locale }
+            ?.flavorText
+            ?.replace("\n", " ")
+            ?.replace("\u000c", " ")
+
+    private fun recupererNomType(typeName: String, locale: String): String {
+        val response = URL("$POKEAPI_BASE_URL/type/$typeName").readText()
+        val names = JSONObject(response).getJSONArray("names")
+
+        for (index in 0 until names.length()) {
+            val nameEntry = names.getJSONObject(index)
+            val language = nameEntry.getJSONObject("language").getString("name")
+
+            if (language == locale) {
+                return nameEntry.getString("name")
+            }
+        }
+
+        return typeName.toDisplayName()
+    }
+
+    private suspend fun recupererEvolutions(
+        pokemonSpecies: PokemonSpecies,
+    ): List<String> {
+        val evolutionChain = pokemonSpecies.evolutionChain.get()
+        val currentLink = evolutionChain.chain.findSpecies(pokemonSpecies.name) ?: return emptyList()
+
+        return currentLink.evolvesTo.mapNotNull { nextEvolution ->
+            nextEvolution.evolutionDetails.firstOrNull()?.toConditionText()
+        }
+    }
+
+    private fun ChainLink.findSpecies(speciesName: String): ChainLink? {
+        if (species.name == speciesName) {
+            return this
+        }
+
+        evolvesTo.forEach { nextLink ->
+            nextLink.findSpecies(speciesName)?.let { return it }
+        }
+
+        return null
+    }
+
+    private fun EvolutionDetail.toConditionText(): String {
+        val conditions = mutableListOf<String>()
+
+        minLevel?.let { conditions += "Niveau $it" }
+        item?.let { conditions += "Avec ${it.name.toDisplayName()}" }
+        heldItem?.let { conditions += "Tenir ${it.name.toDisplayName()}" }
+        knownMove?.let { conditions += "Connaitre ${it.name.toDisplayName()}" }
+        knownMoveType?.let { conditions += "Connaitre une attaque ${it.name.toDisplayName()}" }
+        location?.let { conditions += "A ${it.name.toDisplayName()}" }
+        minHappiness?.let { conditions += "Bonheur $it" }
+        minBeauty?.let { conditions += "Beaute $it" }
+        minAffection?.let { conditions += "Affection $it" }
+        partySpecies?.let { conditions += "Avec ${it.name.toDisplayName()} dans l'equipe" }
+        partyType?.let { conditions += "Avec un type ${it.name.toDisplayName()} dans l'equipe" }
+        tradeSpecies?.let { conditions += "Echange contre ${it.name.toDisplayName()}" }
+
+        if (timeOfDay.isNotBlank()) {
+            conditions += timeOfDay.toDisplayName()
+        }
+        if (needsOverworldRain) {
+            conditions += "Sous la pluie"
+        }
+        if (turnUpsideDown) {
+            conditions += "Console retournee"
+        }
+
+        return conditions.ifEmpty {
+            listOf(trigger.name.toDisplayName())
+        }.joinToString(", ")
+    }
+
 }
