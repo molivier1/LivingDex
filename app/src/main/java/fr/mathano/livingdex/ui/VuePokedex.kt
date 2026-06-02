@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.mathano.livingdex.R
+import fr.mathano.livingdex.data.AppLanguage
 import fr.mathano.livingdex.data.Pokedex
 import fr.mathano.livingdex.data.model.DataPokemon
 import fr.mathano.livingdex.ui.components.BarreRecherche
@@ -50,8 +51,10 @@ fun EcranPokedex(
     val coroutineScope = rememberCoroutineScope()
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
+    val language = AppLanguage.observe()
 
-    LaunchedEffect(recupererPokedexParRegion, recupererEntriesCapturees, idPokedex) {
+    LaunchedEffect(recupererPokedexParRegion, recupererEntriesCapturees, idPokedex, language) {
+        state = PokedexState.Loading
         state = try {
             val pokemons = recupererPokedexParRegion(idPokedex)
             entriesCapturees = recupererEntriesCapturees(idPokedex)

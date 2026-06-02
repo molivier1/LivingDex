@@ -43,8 +43,10 @@ fun EcranPokemonDetail(
     recupererPokemonDetail: suspend (Int) -> DataPokemonDetail = PokemonDetails::recupererPokemonDetail,
 ) {
     var state by remember { mutableStateOf<PokemonDetailState>(PokemonDetailState.Loading) }
+    val language = AppLanguage.observe()
 
-    LaunchedEffect(idPokemon, recupererPokemonDetail) {
+    LaunchedEffect(idPokemon, recupererPokemonDetail, language) {
+        state = PokemonDetailState.Loading
         state = try {
             PokemonDetailState.Success(recupererPokemonDetail(idPokemon))
         } catch (exception: Exception) {

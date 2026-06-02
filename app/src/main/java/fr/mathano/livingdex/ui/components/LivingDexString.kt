@@ -11,6 +11,6 @@ fun livingDexString(
     vararg formatArgs: Any,
 ): String {
     val context = LocalContext.current
-    AppLanguage.current()
+    AppLanguage.observe()
     return AppLanguage.string(context, id, *formatArgs)
 }

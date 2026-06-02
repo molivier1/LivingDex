@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import java.util.Locale
 
 object AppLanguage {
@@ -12,7 +14,10 @@ object AppLanguage {
 
     private var preferences: SharedPreferences? = null
     private var appContext: Context? = null
-    private var selectedLanguage = androidx.compose.runtime.mutableStateOf("en")
+    private val selectedLanguageState = mutableStateOf("en")
+
+    @Volatile
+    private var selectedLanguageCode = "en"
 
     fun init(context: Context) {
         appContext = context.applicationContext
@@ -21,12 +26,16 @@ object AppLanguage {
         if (!preferencesContainsLanguage()) {
             set(Locale.getDefault().language.toSupportedLanguage())
         } else {
-            selectedLanguage.value = preferences?.getString(LANGUAGE_KEY, null) ?: "en"
+            updateLanguage(preferences?.getString(LANGUAGE_KEY, null) ?: "en")
         }
     }
 
     fun current(): String =
-        selectedLanguage.value
+        selectedLanguageCode
+
+    @Composable
+    fun observe(): String =
+        selectedLanguageState.value
 
     fun pokeApiLanguage(): String {
         return when (current()) {
@@ -38,12 +47,17 @@ object AppLanguage {
 
     fun set(language: String) {
         val supportedLanguage = language.toSupportedLanguage()
-        selectedLanguage.value = supportedLanguage
+        updateLanguage(supportedLanguage)
 
         preferences
             ?.edit()
             ?.putString(LANGUAGE_KEY, supportedLanguage)
             ?.apply()
+    }
+
+    private fun updateLanguage(language: String) {
+        selectedLanguageCode = language
+        selectedLanguageState.value = language
     }
 
     fun string(

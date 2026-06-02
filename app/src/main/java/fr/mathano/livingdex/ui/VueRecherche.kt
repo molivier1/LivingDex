@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import fr.mathano.livingdex.R
+import fr.mathano.livingdex.data.AppLanguage
 import fr.mathano.livingdex.data.Pokedex
 import fr.mathano.livingdex.data.model.DataPokemon
 import fr.mathano.livingdex.ui.components.BarreRecherche
@@ -81,8 +82,10 @@ fun EcranRecherche(
     var searchQuery by remember { mutableStateOf("") }
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
+    val language = AppLanguage.observe()
 
-    LaunchedEffect(recupererPokedexNationalProgressif) {
+    LaunchedEffect(recupererPokedexNationalProgressif, language) {
+        state = RechercheState.Loading
         try {
             recupererPokedexNationalProgressif { pokemons ->
                 state = RechercheState.Success(pokemons, isLoading = true)

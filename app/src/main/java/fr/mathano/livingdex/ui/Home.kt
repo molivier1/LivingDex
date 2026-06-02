@@ -1,5 +1,6 @@
 package fr.mathano.livingdex.ui
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,8 +35,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import fr.mathano.livingdex.R
+import fr.mathano.livingdex.data.AppLanguage
 import fr.mathano.livingdex.data.Regions
 import fr.mathano.livingdex.data.model.DataRegion
+import fr.mathano.livingdex.ui.components.Bulle
 import fr.mathano.livingdex.ui.components.livingDexString
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
@@ -49,8 +51,9 @@ fun EcranHome(
     var state by remember { mutableStateOf<RegionsState>(RegionsState.Loading) }
     val columnCount = integerResource(R.integer.n_colonnes)
     val cornerRadius = integerResource(R.integer.arrondi).dp
+    val language = AppLanguage.observe()
 
-    LaunchedEffect(chargerRegions) {
+    LaunchedEffect(chargerRegions, language) {
         state = try {
             RegionsState.Success(chargerRegions())
         } catch (exception: Exception) {
@@ -163,7 +166,7 @@ fun NavigationApp(
                 onRegionClick = { nom, id ->
 
                     navController.navigate(
-                        "pokedex/$nom/$id"
+                        "pokedex/${Uri.encode(nom)}/$id"
                     )
                 }
             )
@@ -173,7 +176,7 @@ fun NavigationApp(
             route = "pokedex/{nom}/{id}",
         ) { backStackEntry ->
 
-            val nom = backStackEntry.arguments?.getString("nom") ?: ""
+            val nom = Uri.decode(backStackEntry.arguments?.getString("nom") ?: "")
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
 
             EcranPokedex(
