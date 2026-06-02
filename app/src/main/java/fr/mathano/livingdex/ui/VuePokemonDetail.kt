@@ -1,11 +1,14 @@
 package fr.mathano.livingdex.ui
 
-import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -18,19 +21,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import fr.mathano.livingdex.data.PokemonDetails
 import fr.mathano.livingdex.data.model.DataPokemonDetail
 import fr.mathano.livingdex.ui.components.Bulle
+import fr.mathano.livingdex.ui.theme.LivingDexBubbleGradient
 
 @Composable
 fun EcranPokemonDetail(
     idPokemon: Int,
     entryDex: Int,
+    idPokedex: Int,
     modifier: Modifier = Modifier,
     recupererPokemonDetail: suspend (Int) -> DataPokemonDetail = PokemonDetails::recupererPokemonDetail,
 ) {
@@ -48,9 +54,9 @@ fun EcranPokemonDetail(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(24.dp),
+            .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         when (val currentState = state) {
             PokemonDetailState.Loading -> {
@@ -67,11 +73,32 @@ fun EcranPokemonDetail(
 
                 Bulle {
                     Text(
-                        text = pokemon.nom,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        text = "Fiche Pokedex",
+                        modifier = Modifier.fillMaxWidth(),
+                        color = Color.Black,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
                     )
+                    Text(
+                        text = pokemon.enteteNumero(idPokedex, entryDex),
+                        modifier = Modifier.fillMaxWidth(),
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center
+                    )
+                }
 
+                Box(
+                    modifier = Modifier
+                        .size(150.dp)
+                        .background(
+                            brush = LivingDexBubbleGradient,
+                            shape = RoundedCornerShape(20.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
                     AsyncImage(
                         model = pokemon.urlSprite,
                         contentDescription = "Image de ${pokemon.nom}",
@@ -79,48 +106,21 @@ fun EcranPokemonDetail(
                     )
                 }
 
-                Bulle {
-                    Text(
-                        text = "National : #${pokemon.idPokemon}",
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Text(
-                        text = "Regional : #$entryDex",
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-
-                TexteDetail("Types", pokemon.types.joinToString(", "))
+                SectionDetail("Types", pokemon.types.joinToString(", "))
 
                 pokemon.description?.let { description ->
-                    TexteDetail("Description", description)
+                    SectionDetail("Description", description)
                 }
 
-                TexteDetail(
-                    titre = "Evolution",
-                    valeur = pokemon.evolutions.joinToString("\n")
+                SectionDetail("Talents", pokemon.talents.joinToString("\n"))
+
+                SectionDetail(
+                    titre = "Mensurations",
+                    valeur = "Taille : ${pokemon.taille.formattedHeight(isFrench)}\n" +
+                        "Poids : ${pokemon.poids.formattedWeight(isFrench)}"
                 )
 
-                Bulle {
-                    Text(
-                        text = "Taille : ${pokemon.taille.formattedHeight(isFrench)}",
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Text(
-                        "Poids : ${pokemon.poids.formattedWeight(isFrench)}",
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-
-                TexteDetail("Talents", pokemon.talents.joinToString(", "))
+                SectionDetail("Evolution", pokemon.evolutions.joinToString("\n"))
             }
         }
     }
@@ -151,8 +151,22 @@ private fun Int.formattedWeight(isFrench: Boolean): String {
 private fun formatOneDecimal(value: Float): String =
     "%.1f".format(java.util.Locale.FRANCE, value)
 
+private fun Int.toDexNumber(): String =
+    "No. ${toString().padStart(3, '0')}"
+
+private fun DataPokemonDetail.enteteNumero(
+    idPokedex: Int,
+    entryDex: Int,
+): String {
+    return if (idPokedex == 1) {
+        "${idPokemon.toDexNumber()}\n$nom"
+    } else {
+        "Reg. ${entryDex.toDexNumber()} - Nat. ${idPokemon.toDexNumber()}\n$nom"
+    }
+}
+
 @Composable
-private fun TexteDetail(
+private fun SectionDetail(
     titre: String,
     valeur: String,
 ) {
@@ -162,10 +176,20 @@ private fun TexteDetail(
 
     Bulle {
         Text(
-            text = "$titre : $valeur",
+            text = titre,
+            modifier = Modifier.fillMaxWidth(),
             color = Color.Black,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = valeur,
+            modifier = Modifier.fillMaxWidth(),
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center
         )
     }
 }

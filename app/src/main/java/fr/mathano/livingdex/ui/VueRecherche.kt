@@ -50,18 +50,20 @@ fun NavigationRecherche(
         composable("recherche") {
             EcranRecherche(
                 onPokemonLongClick = { idPokemon, entryDex ->
-                    navController.navigate("pokemon/$idPokemon/$entryDex")
+                    navController.navigate("pokemon/$idPokemon/$entryDex/1")
                 }
             )
         }
 
-        composable("pokemon/{idPokemon}/{entryDex}") { backStackEntry ->
+        composable("pokemon/{idPokemon}/{entryDex}/{idPokedex}") { backStackEntry ->
             val idPokemon = backStackEntry.arguments?.getString("idPokemon")?.toInt() ?: 0
             val entryDex = backStackEntry.arguments?.getString("entryDex")?.toInt() ?: 0
+            val idPokedex = backStackEntry.arguments?.getString("idPokedex")?.toInt() ?: 0
 
             EcranPokemonDetail(
                 idPokemon = idPokemon,
-                entryDex = entryDex
+                entryDex = entryDex,
+                idPokedex = idPokedex
             )
         }
     }
