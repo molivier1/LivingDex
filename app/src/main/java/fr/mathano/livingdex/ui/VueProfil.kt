@@ -34,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.AppLanguage
 import fr.mathano.livingdex.ui.components.Bulle
+import fr.mathano.livingdex.ui.components.livingDexString
 
 @Composable
 fun NavigationProfil(
@@ -77,7 +78,7 @@ private fun EcranProfil(
         )
 
         Text(
-            text = "Profil",
+            text = livingDexString(R.string.profile_title),
             color = Color.Black,
             fontSize = 24.sp,
             fontWeight = FontWeight.Medium,
@@ -107,7 +108,7 @@ private fun BoutonSettings(
     ) {
         Image(
             painter = painterResource(R.drawable.settings),
-            contentDescription = "Parametres",
+            contentDescription = livingDexString(R.string.settings_content_description),
             contentScale = ContentScale.Fit,
             modifier = Modifier.size(32.dp)
         )
@@ -120,13 +121,13 @@ private fun EcranSettings(
 ) {
     var selectedLanguage by remember { mutableStateOf(AppLanguage.current()) }
     val languages = listOf(
-        LanguageOption("fr", "🇫🇷", "Français"),
-        LanguageOption("en", "🇬🇧", "Anglais"),
-        LanguageOption("es", "🇪🇸", "Espagnol"),
-        LanguageOption("it", "🇮🇹", "Italien"),
-        LanguageOption("ru", "🇷🇺", "Russe"),
-        LanguageOption("ja", "🇯🇵", "Japonais"),
-        LanguageOption("zh-Hans", "🇨🇳", "Chinois")
+        LanguageOption("fr", R.string.language_fr),
+        LanguageOption("en", R.string.language_en),
+        LanguageOption("es", R.string.language_es),
+        LanguageOption("it", R.string.language_it),
+        LanguageOption("ru", R.string.language_ru),
+        LanguageOption("ja", R.string.language_ja),
+        LanguageOption("zh-Hans", R.string.language_zh)
     )
 
     Column(
@@ -138,7 +139,7 @@ private fun EcranSettings(
     ) {
         Bulle {
             Text(
-                text = "Langue",
+                text = livingDexString(R.string.language_title),
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.Black,
                 fontSize = 32.sp,
@@ -169,11 +170,11 @@ private fun EcranSettings(
 
 private data class LanguageOption(
     val code: String,
-    val emoji: String,
-    val name: String,
+    val labelResId: Int,
 ) {
+    @Composable
     fun label(isSelected: Boolean): String {
         val selectedText = if (isSelected) " ✓" else ""
-        return "$emoji $name$selectedText"
+        return livingDexString(labelResId) + selectedText
     }
 }

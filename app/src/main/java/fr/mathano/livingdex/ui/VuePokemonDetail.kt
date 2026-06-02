@@ -26,10 +26,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.AppLanguage
 import fr.mathano.livingdex.data.PokemonDetails
 import fr.mathano.livingdex.data.model.DataPokemonDetail
 import fr.mathano.livingdex.ui.components.Bulle
+import fr.mathano.livingdex.ui.components.livingDexString
 import fr.mathano.livingdex.ui.theme.LivingDexBubbleGradient
 
 @Composable
@@ -60,11 +62,11 @@ fun EcranPokemonDetail(
     ) {
         when (val currentState = state) {
             PokemonDetailState.Loading -> {
-                Text("Chargement...")
+                Text(livingDexString(R.string.loading))
             }
 
             PokemonDetailState.Error -> {
-                Text("Erreur API")
+                Text(livingDexString(R.string.error_api))
             }
 
             is PokemonDetailState.Success -> {
@@ -73,7 +75,7 @@ fun EcranPokemonDetail(
 
                 Bulle {
                     Text(
-                        text = "Fiche Pokedex",
+                        text = livingDexString(R.string.pokedex_sheet_title),
                         modifier = Modifier.fillMaxWidth(),
                         color = Color.Black,
                         fontSize = 32.sp,
@@ -101,26 +103,31 @@ fun EcranPokemonDetail(
                 ) {
                     AsyncImage(
                         model = pokemon.urlSprite,
-                        contentDescription = "Image de ${pokemon.nom}",
+                        contentDescription = livingDexString(R.string.pokemon_image_description, pokemon.nom),
                         modifier = Modifier.size(128.dp)
                     )
                 }
 
-                SectionDetail("Types", pokemon.types.joinToString(", "))
+                SectionDetail(livingDexString(R.string.types_title), pokemon.types.joinToString(", "))
 
                 pokemon.description?.let { description ->
-                    SectionDetail("Description", description)
+                    SectionDetail(livingDexString(R.string.description_title), description)
                 }
 
-                SectionDetail("Talents", pokemon.talents.joinToString("\n"))
+                SectionDetail(livingDexString(R.string.abilities_title), pokemon.talents.joinToString("\n"))
 
                 SectionDetail(
-                    titre = "Mensurations",
-                    valeur = "Taille : ${pokemon.taille.formattedHeight(isFrench)}\n" +
-                        "Poids : ${pokemon.poids.formattedWeight(isFrench)}"
+                    titre = livingDexString(R.string.measurements_title),
+                    valeur = livingDexString(
+                        R.string.height_label,
+                        pokemon.taille.formattedHeight(isFrench)
+                    ) + "\n" + livingDexString(
+                        R.string.weight_label,
+                        pokemon.poids.formattedWeight(isFrench)
+                    )
                 )
 
-                SectionDetail("Evolution", pokemon.evolutions.joinToString("\n"))
+                SectionDetail(livingDexString(R.string.evolution_title), pokemon.evolutions.joinToString("\n"))
             }
         }
     }
@@ -151,17 +158,24 @@ private fun Int.formattedWeight(isFrench: Boolean): String {
 private fun formatOneDecimal(value: Float): String =
     "%.1f".format(java.util.Locale.FRANCE, value)
 
+@Composable
 private fun Int.toDexNumber(): String =
-    "No. ${toString().padStart(3, '0')}"
+    livingDexString(R.string.dex_no_format, this)
 
+@Composable
 private fun DataPokemonDetail.enteteNumero(
     idPokedex: Int,
     entryDex: Int,
 ): String {
     return if (idPokedex == 1) {
-        "${idPokemon.toDexNumber()}\n$nom"
+        livingDexString(R.string.national_dex_header, idPokemon.toDexNumber(), nom)
     } else {
-        "Reg. ${entryDex.toDexNumber()} - Nat. ${idPokemon.toDexNumber()}\n$nom"
+        livingDexString(
+            R.string.regional_dex_header,
+            entryDex.toDexNumber(),
+            idPokemon.toDexNumber(),
+            nom
+        )
     }
 }
 

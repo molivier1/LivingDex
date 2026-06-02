@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import fr.mathano.livingdex.R
 
 @Composable
 fun BarreRecherche(
@@ -21,7 +22,7 @@ fun BarreRecherche(
         modifier = modifier.fillMaxWidth(),
         singleLine = true,
         textStyle = LocalTextStyle.current.copy(color = Color.Black),
-        label = { Text("Rechercher", color = Color.Black) },
+        label = { Text(livingDexString(R.string.search_hint), color = Color.Black) },
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Color.Black,
             unfocusedBorderColor = Color.Black,

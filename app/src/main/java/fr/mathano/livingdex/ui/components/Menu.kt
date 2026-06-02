@@ -1,6 +1,7 @@
 package fr.mathano.livingdex.ui.components
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,12 +32,11 @@ import fr.mathano.livingdex.R
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
 enum class AppDestination(
-    val label: String,
-    val contentTitle: String,
+    @param:StringRes val labelResId: Int,
 ) {
-    HOME("Accueil", "Accueil"),
-    RECHERCHER("Rechercher", "Rechercher"),
-    PROFIL("Profil", "Profil"),
+    HOME(R.string.menu_home),
+    RECHERCHER(R.string.menu_search),
+    PROFIL(R.string.menu_profile),
 }
 
 @Composable
@@ -85,7 +85,7 @@ private fun LivingDexMenuContent(
                 } else {
                     R.drawable.home
                 },
-                contentDescription = AppDestination.HOME.label,
+                contentDescription = livingDexString(AppDestination.HOME.labelResId),
                 modifier = Modifier.size(52.dp)
             )
         }
@@ -96,7 +96,7 @@ private fun LivingDexMenuContent(
         ) {
             MenuImageIcon(
                 resourceId = R.drawable.ball,
-                contentDescription = AppDestination.RECHERCHER.label,
+                contentDescription = livingDexString(AppDestination.RECHERCHER.labelResId),
                 modifier = Modifier.size(62.dp)
             )
         }
@@ -111,7 +111,7 @@ private fun LivingDexMenuContent(
                 } else {
                     R.drawable.utilisateur
                 },
-                contentDescription = AppDestination.PROFIL.label,
+                contentDescription = livingDexString(AppDestination.PROFIL.labelResId),
                 modifier = Modifier.size(52.dp)
             )
         }

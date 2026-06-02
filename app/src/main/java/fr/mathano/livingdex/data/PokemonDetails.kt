@@ -5,6 +5,7 @@ import co.pokeapi.pokekotlin.PokeApi.Default.get
 import co.pokeapi.pokekotlin.model.ChainLink
 import co.pokeapi.pokekotlin.model.EvolutionDetail
 import co.pokeapi.pokekotlin.model.PokemonSpecies
+import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.local.DatabaseProvider
 import fr.mathano.livingdex.data.local.toDataPokemonDetail
 import fr.mathano.livingdex.data.local.toPokemonDetailEntity
@@ -58,7 +59,7 @@ object PokemonDetails {
                         ?: abilityHandle.name.toDisplayName()
 
                     if (pokemonAbility.isHidden) {
-                        "$nomTalent (cache)"
+                        AppLanguage.string(R.string.hidden_ability_format, nomTalent)
                     } else {
                         nomTalent
                     }
@@ -134,27 +135,33 @@ object PokemonDetails {
     private fun EvolutionDetail.toConditionText(): String {
         val conditions = mutableListOf<String>()
 
-        minLevel?.let { conditions += "Niveau $it" }
-        item?.let { conditions += "Avec ${it.name.toDisplayName()}" }
-        heldItem?.let { conditions += "Tenir ${it.name.toDisplayName()}" }
-        knownMove?.let { conditions += "Connaitre ${it.name.toDisplayName()}" }
-        knownMoveType?.let { conditions += "Connaitre une attaque ${it.name.toDisplayName()}" }
-        location?.let { conditions += "A ${it.name.toDisplayName()}" }
-        minHappiness?.let { conditions += "Bonheur $it" }
-        minBeauty?.let { conditions += "Beaute $it" }
-        minAffection?.let { conditions += "Affection $it" }
-        partySpecies?.let { conditions += "Avec ${it.name.toDisplayName()} dans l'equipe" }
-        partyType?.let { conditions += "Avec un type ${it.name.toDisplayName()} dans l'equipe" }
-        tradeSpecies?.let { conditions += "Echange contre ${it.name.toDisplayName()}" }
+        minLevel?.let { conditions += AppLanguage.string(R.string.evolution_level, it) }
+        item?.let { conditions += AppLanguage.string(R.string.evolution_with_item, it.name.toDisplayName()) }
+        heldItem?.let { conditions += AppLanguage.string(R.string.evolution_hold_item, it.name.toDisplayName()) }
+        knownMove?.let { conditions += AppLanguage.string(R.string.evolution_known_move, it.name.toDisplayName()) }
+        knownMoveType?.let {
+            conditions += AppLanguage.string(R.string.evolution_known_move_type, it.name.toDisplayName())
+        }
+        location?.let { conditions += AppLanguage.string(R.string.evolution_at_location, it.name.toDisplayName()) }
+        minHappiness?.let { conditions += AppLanguage.string(R.string.evolution_happiness, it) }
+        minBeauty?.let { conditions += AppLanguage.string(R.string.evolution_beauty, it) }
+        minAffection?.let { conditions += AppLanguage.string(R.string.evolution_affection, it) }
+        partySpecies?.let {
+            conditions += AppLanguage.string(R.string.evolution_party_species, it.name.toDisplayName())
+        }
+        partyType?.let { conditions += AppLanguage.string(R.string.evolution_party_type, it.name.toDisplayName()) }
+        tradeSpecies?.let {
+            conditions += AppLanguage.string(R.string.evolution_trade_species, it.name.toDisplayName())
+        }
 
         if (timeOfDay.isNotBlank()) {
             conditions += timeOfDay.toDisplayName()
         }
         if (needsOverworldRain) {
-            conditions += "Sous la pluie"
+            conditions += AppLanguage.string(R.string.evolution_rain)
         }
         if (turnUpsideDown) {
-            conditions += "Console retournee"
+            conditions += AppLanguage.string(R.string.evolution_turn_upside_down)
         }
 
         return conditions.ifEmpty {

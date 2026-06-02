@@ -37,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import fr.mathano.livingdex.R
 import fr.mathano.livingdex.data.Regions
 import fr.mathano.livingdex.data.model.DataRegion
+import fr.mathano.livingdex.ui.components.livingDexString
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
 @Composable
@@ -70,7 +71,7 @@ fun EcranHome(
                 items(8) { CarreArrondi(label = "", cornerRadius = cornerRadius, idPokedex = 0, onClick = onRegionClick) }
             }
             is RegionsState.Error -> {
-                item { Text("Erreur API") }
+                item { Text(livingDexString(R.string.error_api)) }
             }
             is RegionsState.Success -> {
                 items(currentState.regions.toList()) { (idRegion, nomRegion, idPokedex) ->

@@ -30,6 +30,7 @@ import fr.mathano.livingdex.data.model.DataPokemon
 import fr.mathano.livingdex.ui.components.BarreRecherche
 import fr.mathano.livingdex.ui.components.Bulle
 import fr.mathano.livingdex.ui.components.CarrePokemon
+import fr.mathano.livingdex.ui.components.livingDexString
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,7 +67,7 @@ fun EcranPokedex(
     ) {
         Bulle {
             Text(
-                text = "Région : $nomRegion",
+                text = livingDexString(R.string.region_title, nomRegion),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -125,7 +126,7 @@ fun EcranPokedex(
                 }
 
                 is PokedexState.Error -> {
-                    item { Text("Erreur API") }
+                    item { Text(livingDexString(R.string.error_api)) }
                 }
 
                 is PokedexState.Success -> {

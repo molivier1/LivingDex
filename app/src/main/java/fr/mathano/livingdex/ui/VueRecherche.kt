@@ -31,6 +31,7 @@ import fr.mathano.livingdex.data.model.DataPokemon
 import fr.mathano.livingdex.ui.components.BarreRecherche
 import fr.mathano.livingdex.ui.components.Bulle
 import fr.mathano.livingdex.ui.components.CarrePokemon
+import fr.mathano.livingdex.ui.components.livingDexString
 
 @Composable
 fun NavigationRecherche(
@@ -109,14 +110,17 @@ fun EcranRecherche(
     ) {
         Bulle {
             Text(
-                text = "Pokedex national",
+                text = livingDexString(R.string.pokedex_national),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
 
             if (state is RechercheState.Success && (state as RechercheState.Success).isLoading) {
                 Text(
-                    text = "Chargement... ${(state as RechercheState.Success).pokemons.size} Pokemon",
+                    text = livingDexString(
+                        R.string.loading_pokemon_count,
+                        (state as RechercheState.Success).pokemons.size
+                    ),
                     modifier = Modifier.padding(top = 4.dp),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
@@ -151,7 +155,7 @@ fun EcranRecherche(
                 }
 
                 RechercheState.Error -> {
-                    item { Text("Erreur API") }
+                    item { Text(livingDexString(R.string.error_api)) }
                 }
 
                 is RechercheState.Success -> {

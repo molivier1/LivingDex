@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import fr.mathano.livingdex.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -68,7 +69,7 @@ fun CarrePokemon(
         ) {
             AsyncImage(
                 model = urlSprite,
-                contentDescription = "Image de $label",
+                contentDescription = livingDexString(R.string.pokemon_image_description, label),
                 modifier = Modifier.fillMaxSize()
             )
         }
