@@ -5,27 +5,23 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import androidx.compose.ui.unit.sp
 import fr.mathano.livingdex.data.local.DatabaseProvider
+import fr.mathano.livingdex.ui.NavigationProfil
+import fr.mathano.livingdex.ui.NavigationRecherche
 import fr.mathano.livingdex.ui.components.AppDestination
 import fr.mathano.livingdex.ui.components.LivingDexMenu
 import fr.mathano.livingdex.ui.theme.LivingDexBackgroundGradient
-import fr.mathano.livingdex.ui.NavigationRecherche
 import fr.mathano.livingdex.ui.theme.LivingDexTheme
 
 class MainActivity : ComponentActivity() {
@@ -96,19 +92,9 @@ fun LivingDexApp() {
             }
 
             AppDestination.PROFIL -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = currentDestination.contentTitle,
-                        color = Color.Black,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
+                NavigationProfil(
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
         }
     }
