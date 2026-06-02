@@ -22,11 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import fr.mathano.livingdex.data.AppLanguage
 import fr.mathano.livingdex.data.PokemonDetails
 import fr.mathano.livingdex.data.model.DataPokemonDetail
 import fr.mathano.livingdex.ui.components.Bulle
@@ -69,7 +69,7 @@ fun EcranPokemonDetail(
 
             is PokemonDetailState.Success -> {
                 val pokemon = currentState.pokemon
-                val isFrench = Locale.current.language == "fr"
+                val isFrench = AppLanguage.current() == "fr"
 
                 Bulle {
                     Text(

@@ -1,6 +1,5 @@
 package fr.mathano.livingdex.data
 
-import androidx.compose.ui.text.intl.Locale
 import co.pokeapi.pokekotlin.PokeApi
 import fr.mathano.livingdex.data.local.DatabaseProvider
 import fr.mathano.livingdex.data.local.toDataRegion
@@ -14,7 +13,7 @@ import kotlinx.coroutines.withContext
 
 object Regions {
     suspend fun recupererRegions(): List<DataRegion> = withContext(Dispatchers.IO) {
-        val locale = Locale.current.language
+        val locale = AppLanguage.current()
         val pokeDao = DatabaseProvider.pokeDao
 
         val regionsEnBase = pokeDao.getRegions(locale)

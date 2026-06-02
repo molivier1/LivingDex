@@ -1,6 +1,5 @@
 package fr.mathano.livingdex.data
 
-import androidx.compose.ui.text.intl.Locale
 import co.pokeapi.pokekotlin.PokeApi
 import co.pokeapi.pokekotlin.PokeApi.Default.get
 import co.pokeapi.pokekotlin.model.PokemonEntry
@@ -20,7 +19,7 @@ object Pokedex {
     private const val POKEMON_FETCH_BATCH_SIZE = 100
 
     suspend fun recupererPokedexParRegion(idPokedex: Int): List<DataPokemon> = withContext(Dispatchers.IO) {
-        val locale = Locale.current.language
+        val locale = AppLanguage.current()
         val pokeDao = DatabaseProvider.pokeDao
 
         val pokemonsEnBase = pokeDao.getPokedexPokemons(idPokedex, locale)
@@ -52,7 +51,7 @@ object Pokedex {
     suspend fun recupererPokedexNationalProgressif(
         onPokemonsLoaded: (List<DataPokemon>) -> Unit,
     ) = withContext(Dispatchers.IO) {
-        val locale = Locale.current.language
+        val locale = AppLanguage.current()
         val pokeDao = DatabaseProvider.pokeDao
         val pokemonsParEntryDex = linkedMapOf<Int, DataPokemon>()
 

@@ -1,6 +1,5 @@
 package fr.mathano.livingdex.data
 
-import androidx.compose.ui.text.intl.Locale
 import co.pokeapi.pokekotlin.PokeApi
 import co.pokeapi.pokekotlin.PokeApi.Default.get
 import co.pokeapi.pokekotlin.model.ChainLink
@@ -21,7 +20,7 @@ object PokemonDetails {
     private const val POKEAPI_BASE_URL = "https://pokeapi.co/api/v2"
 
     suspend fun recupererPokemonDetail(idPokemon: Int): DataPokemonDetail = withContext(Dispatchers.IO) {
-        val locale = Locale.current.language
+        val locale = AppLanguage.current()
         val pokeDao = DatabaseProvider.pokeDao
 
         val pokemonEnBase = pokeDao.getPokemonDetail(idPokemon, locale)
